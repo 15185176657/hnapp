@@ -32,7 +32,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
   ChartGranularity _granularity = ChartGranularity.day;
   MetricChartData? _data;
   bool _isLoading = true;
-  String? _error;
+  bool _hasError = false;
 
   @override
   void didChangeDependencies() {
@@ -43,7 +43,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
   Future<void> _load() async {
     setState(() {
       _isLoading = true;
-      _error = null;
+      _hasError = false;
     });
     try {
       final data = await AppScope.of(context).demoRepository.fetchMetricChart(
@@ -59,7 +59,7 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
       if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _error = 'error';
+        _hasError = true;
       });
     }
   }
@@ -94,11 +94,11 @@ class _MetricDetailPageState extends State<MetricDetailPage> {
                   ],
                 ),
               )
-            else if (_error != null)
+            else if (_hasError)
               StateMessage(
                 icon: Icons.error_outline_rounded,
                 title: l10n.errorLoadingData,
-                message: l10n.noData,
+                message: widget.title,
                 actionLabel: l10n.retry,
                 onAction: _load,
               )

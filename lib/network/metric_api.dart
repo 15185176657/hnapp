@@ -63,21 +63,8 @@ abstract final class MetricApiAdapter {
   static String _label(DateTime time, ChartGranularity granularity) {
     return switch (granularity) {
       ChartGranularity.day => time.hour.toString().padLeft(2, '0'),
-      ChartGranularity.week => _weekday(time.weekday),
+      ChartGranularity.week => '${time.month}/${time.day}',
       ChartGranularity.month => time.day.toString(),
-    };
-  }
-
-  static String _weekday(int weekday) {
-    return switch (weekday) {
-      DateTime.monday => 'Mon',
-      DateTime.tuesday => 'Tue',
-      DateTime.wednesday => 'Wed',
-      DateTime.thursday => 'Thu',
-      DateTime.friday => 'Fri',
-      DateTime.saturday => 'Sat',
-      DateTime.sunday => 'Sun',
-      _ => '',
     };
   }
 }
