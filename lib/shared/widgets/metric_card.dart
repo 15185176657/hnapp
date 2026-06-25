@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/theme/app_theme.dart';
 import 'section_card.dart';
 
 class MetricCard extends StatelessWidget {
@@ -33,7 +32,10 @@ class MetricCard extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: Color.alphaBlend(color.withAlpha(22), AppColors.surface),
+                  color: Color.alphaBlend(
+                    color.withAlpha(22),
+                    Theme.of(context).colorScheme.surface,
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: color, size: 20),

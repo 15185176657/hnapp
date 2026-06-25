@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_scope.dart';
 import 'core/api/api_client.dart';
 import 'core/config/app_environment.dart';
 import 'core/demo/demo_repository.dart';
+import 'core/i18n/app_localizations.dart';
+import 'core/i18n/locale_controller.dart';
 import 'core/session/auth_session.dart';
 import 'core/theme/app_theme.dart';
 import 'features/alerts/alerts_page.dart';
@@ -26,6 +29,7 @@ class _MyAppState extends State<MyApp> {
   late final AuthSession _authSession;
   late final DemoRepository _demoRepository;
   late final ApiClient _apiClient;
+  late final LocaleController _localeController;
 
   @override
   void initState() {
@@ -36,6 +40,13 @@ class _MyAppState extends State<MyApp> {
       config: ApiConfig.fromDartDefine(),
       session: _authSession,
     );
+    _localeController = LocaleController();
+  }
+
+  @override
+  void dispose() {
+    _localeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -44,11 +55,30 @@ class _MyAppState extends State<MyApp> {
       apiClient: _apiClient,
       authSession: _authSession,
       demoRepository: _demoRepository,
-      child: MaterialApp(
-        title: 'Off-grid Solar',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.light(),
-        home: const SolarShell(),
+      localeController: _localeController,
+      child: AnimatedBuilder(
+        animation: _localeController,
+        builder: (context, _) {
+          return MaterialApp(
+            title: 'Off-grid Solar',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.light(),
+            darkTheme: AppTheme.dark(),
+            themeMode: ThemeMode.system,
+            locale: _localeController.locale,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            localeResolutionCallback: (deviceLocale, supportedLocales) {
+              return _localeController.resolve(deviceLocale);
+            },
+            home: const SolarShell(),
+          );
+        },
       ),
     );
   }
@@ -73,10 +103,8 @@ class _SolarShellState extends State<SolarShell> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Solar Monitor'),
-      ),
       body: SafeArea(
         child: IndexedStack(
           index: _selectedIndex,
@@ -86,26 +114,26 @@ class _SolarShellState extends State<SolarShell> {
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
         onDestinationSelected: (index) => setState(() => _selectedIndex = index),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard_rounded),
-            label: 'Home',
+            icon: const Icon(Icons.dashboard_outlined),
+            selectedIcon: const Icon(Icons.dashboard_rounded),
+            label: l10n.navHome,
           ),
           NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart_rounded),
-            label: 'Data',
+            icon: const Icon(Icons.bar_chart_outlined),
+            selectedIcon: const Icon(Icons.bar_chart_rounded),
+            label: l10n.navData,
           ),
           NavigationDestination(
-            icon: Icon(Icons.notifications_none_rounded),
-            selectedIcon: Icon(Icons.notifications_active_rounded),
-            label: 'Alerts',
+            icon: const Icon(Icons.notifications_none_rounded),
+            selectedIcon: const Icon(Icons.notifications_active_rounded),
+            label: l10n.navAlerts,
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_outline_rounded),
-            selectedIcon: Icon(Icons.person_rounded),
-            label: 'Mine',
+            icon: const Icon(Icons.person_outline_rounded),
+            selectedIcon: const Icon(Icons.person_rounded),
+            label: l10n.navMine,
           ),
         ],
       ),

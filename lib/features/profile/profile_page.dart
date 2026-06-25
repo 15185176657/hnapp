@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
 import '../../core/demo/demo_models.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/setting_tile.dart';
+
+/// Sentinel dropdown value representing "follow the system language".
+const String _systemLanguageValue = 'system';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,30 +17,30 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String _language = 'English';
   bool _notificationsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     final scope = AppScope.of(context);
+    final l10n = AppLocalizations.of(context);
     return FutureBuilder<DeviceInfo>(
       future: scope.demoRepository.fetchDeviceInfo(),
       builder: (context, snapshot) {
         final device = snapshot.data;
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            Text('My system', style: Theme.of(context).textTheme.headlineSmall),
+            Text(l10n.profileTitle, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 6),
-            Text('Account, device, language and alert preferences.', style: Theme.of(context).textTheme.bodyMedium),
+            Text(l10n.profileSubtitle, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
             SectionCard(
               child: Column(
                 children: [
                   SettingTile(
                     icon: Icons.account_circle_rounded,
-                    title: scope.authSession.isSignedIn ? 'Demo account signed in' : 'Not signed in',
-                    subtitle: 'Phone/email OTP placeholder for demo',
+                    title: scope.authSession.isSignedIn ? l10n.accountSignedIn : l10n.accountNotSignedIn,
+                    subtitle: l10n.otpPlaceholder,
                     trailing: FilledButton.tonal(
                       onPressed: () {
                         setState(() {
@@ -45,16 +49,18 @@ class _ProfilePageState extends State<ProfilePage> {
                               : scope.authSession.signInWithDemoToken();
                         });
                       },
-                      child: Text(scope.authSession.isSignedIn ? 'Sign out' : 'Sign in'),
+                      child: Text(scope.authSession.isSignedIn ? l10n.signOut : l10n.signIn),
                     ),
                   ),
                   const Divider(),
                   SettingTile(
                     icon: Icons.qr_code_scanner_rounded,
-                    title: 'Bind device',
-                    subtitle: device == null ? 'Scan QR code or enter SN' : 'SN ${device.serialNumber}',
+                    title: l10n.bindDevice,
+                    subtitle: device == null
+                        ? l10n.bindDeviceHintEmpty
+                        : l10n.bindDeviceHintSerial(device.serialNumber),
                     trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => _showSnack(context, 'Device binding flow is reserved for API integration.'),
+                    onTap: () => _showSnack(context, l10n.bindingReserved),
                   ),
                 ],
               ),
@@ -64,9 +70,9 @@ class _ProfilePageState extends State<ProfilePage> {
               SectionCard(
                 child: Column(
                   children: [
-                    _InfoRow(label: 'PV capacity', value: '${device.capacityKw.toStringAsFixed(1)} kW'),
-                    _InfoRow(label: 'Battery capacity', value: '${device.batteryCapacityKwh.toStringAsFixed(1)} kWh'),
-                    _InfoRow(label: 'Firmware', value: device.firmwareVersion),
+                    _InfoRow(label: l10n.pvCapacity, value: '${device.capacityKw.toStringAsFixed(1)} kW'),
+                    _InfoRow(label: l10n.batteryCapacity, value: '${device.batteryCapacityKwh.toStringAsFixed(1)} kWh'),
+                    _InfoRow(label: l10n.firmware, value: device.firmwareVersion),
                   ],
                 ),
               ),
@@ -76,29 +82,15 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   SettingTile(
                     icon: Icons.language_rounded,
-                    title: 'Language',
-                    subtitle: _language,
-                    trailing: DropdownButton<String>(
-                      value: _language,
-                      underline: const SizedBox.shrink(),
-                      items: const [
-                        DropdownMenuItem(value: 'English', child: Text('English')),
-                        DropdownMenuItem(value: 'Thai', child: Text('Thai')),
-                        DropdownMenuItem(value: 'Vietnamese', child: Text('Vietnamese')),
-                        DropdownMenuItem(value: 'Indonesian', child: Text('Indonesian')),
-                      ],
-                      onChanged: (value) {
-                        if (value != null) {
-                          setState(() => _language = value);
-                        }
-                      },
-                    ),
+                    title: l10n.language,
+                    subtitle: _languageSubtitle(l10n, scope),
+                    trailing: _LanguageDropdown(),
                   ),
                   const Divider(),
                   SettingTile(
                     icon: Icons.notifications_active_rounded,
-                    title: 'Alert notifications',
-                    subtitle: 'Low battery, faults and overload',
+                    title: l10n.alertNotifications,
+                    subtitle: l10n.alertNotificationsSubtitle,
                     trailing: Switch(
                       value: _notificationsEnabled,
                       onChanged: (value) => setState(() => _notificationsEnabled = value),
@@ -107,10 +99,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   const Divider(),
                   SettingTile(
                     icon: Icons.privacy_tip_rounded,
-                    title: 'Privacy and user agreement',
-                    subtitle: 'Reserved page for launch preparation',
+                    title: l10n.privacyTitle,
+                    subtitle: l10n.privacySubtitle,
                     trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => _showSnack(context, 'Agreement page placeholder.'),
+                    onTap: () => _showSnack(context, l10n.privacyPlaceholder),
                   ),
                 ],
               ),
@@ -121,8 +113,53 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  String _languageSubtitle(AppLocalizations l10n, AppScope scope) {
+    final locale = scope.localeController.locale;
+    if (locale == null) {
+      return l10n.languageSystemDefault;
+    }
+    return AppLocalizations.nativeName(locale.languageCode);
+  }
+
   void _showSnack(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _LanguageDropdown extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final scope = AppScope.of(context);
+    final l10n = AppLocalizations.of(context);
+    final controller = scope.localeController;
+    final currentValue = controller.locale?.languageCode ?? _systemLanguageValue;
+
+    return DropdownButton<String>(
+      value: currentValue,
+      underline: const SizedBox.shrink(),
+      items: [
+        DropdownMenuItem(
+          value: _systemLanguageValue,
+          child: Text(l10n.languageSystemDefault),
+        ),
+        ...AppLocalizations.supportedLocales.map((locale) {
+          return DropdownMenuItem(
+            value: locale.languageCode,
+            child: Text(AppLocalizations.nativeName(locale.languageCode)),
+          );
+        }),
+      ],
+      onChanged: (value) {
+        if (value == null) {
+          return;
+        }
+        if (value == _systemLanguageValue) {
+          controller.setLocale(null);
+        } else {
+          controller.setLocale(Locale(value));
+        }
+      },
+    );
   }
 }
 

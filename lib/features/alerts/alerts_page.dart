@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
 import '../../core/demo/demo_models.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/state_message.dart';
@@ -19,21 +20,22 @@ class _AlertsPageState extends State<AlertsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return FutureBuilder<List<SolarAlert>>(
       future: AppScope.of(context).demoRepository.fetchAlerts(history: _showHistory),
       builder: (context, snapshot) {
         final alerts = snapshot.data ?? const <SolarAlert>[];
         return ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            Text('Alerts', style: Theme.of(context).textTheme.headlineSmall),
+            Text(l10n.alertsTitle, style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 6),
-            Text('Clear actions for low battery, faults and overload.', style: Theme.of(context).textTheme.bodyMedium),
+            Text(l10n.alertsSubtitle, style: Theme.of(context).textTheme.bodyMedium),
             const SizedBox(height: 16),
             SegmentedButton<bool>(
-              segments: const [
-                ButtonSegment(value: false, label: Text('Current'), icon: Icon(Icons.notifications_active_rounded)),
-                ButtonSegment(value: true, label: Text('History'), icon: Icon(Icons.history_rounded)),
+              segments: [
+                ButtonSegment(value: false, label: Text(l10n.segmentCurrent), icon: const Icon(Icons.notifications_active_rounded)),
+                ButtonSegment(value: true, label: Text(l10n.segmentHistory), icon: const Icon(Icons.history_rounded)),
               ],
               selected: {_showHistory},
               onSelectionChanged: (selection) => setState(() => _showHistory = selection.first),
@@ -45,10 +47,10 @@ class _AlertsPageState extends State<AlertsPage> {
                 child: CircularProgressIndicator(),
               ))
             else if (alerts.isEmpty)
-              const StateMessage(
+              StateMessage(
                 icon: Icons.check_circle_rounded,
-                title: 'No alerts',
-                message: 'The system is running normally. Keep monitoring the battery before night.',
+                title: l10n.noAlertsTitle,
+                message: l10n.noAlertsMessage,
               )
             else
               ...alerts.map((alert) => Padding(
@@ -69,59 +71,85 @@ class _AlertCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final presentation = _severityPresentation(alert.severity);
+    final l10n = AppLocalizations.of(context);
+    final presentation = _severityPresentation(l10n, alert.severity);
+    final accent = alert.isResolved ? AppColors.battery : presentation.color;
     return SectionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
+      padding: EdgeInsets.zero,
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Severity accent bar for fast scanning.
+            Container(
+              width: 4,
+              decoration: BoxDecoration(
+                color: accent,
+                borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
               ),
-              StatusPill(
-                label: alert.isResolved ? 'Resolved' : presentation.label,
-                icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
-                color: alert.isResolved ? AppColors.battery : presentation.color,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.canvas,
-              borderRadius: BorderRadius.circular(12),
             ),
-            child: Text('Action: ${alert.action}', style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          const SizedBox(height: 8),
-          Text(_relativeTime(alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
-        ],
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
+                        ),
+                        StatusPill(
+                          label: alert.isResolved ? l10n.resolved : presentation.label,
+                          icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
+                          color: accent,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-({String label, IconData icon, Color color}) _severityPresentation(AlertSeverity severity) {
+({String label, IconData icon, Color color}) _severityPresentation(
+  AppLocalizations l10n,
+  AlertSeverity severity,
+) {
   return switch (severity) {
-    AlertSeverity.warning => (label: 'Warning', icon: Icons.warning_rounded, color: AppColors.warning),
-    AlertSeverity.critical => (label: 'Critical', icon: Icons.report_rounded, color: AppColors.danger),
-    AlertSeverity.info => (label: 'Info', icon: Icons.info_rounded, color: AppColors.ocean),
+    AlertSeverity.warning => (label: l10n.severityWarning, icon: Icons.warning_rounded, color: AppColors.warning),
+    AlertSeverity.critical => (label: l10n.severityCritical, icon: Icons.report_rounded, color: AppColors.danger),
+    AlertSeverity.info => (label: l10n.severityInfo, icon: Icons.info_rounded, color: AppColors.ocean),
   };
 }
 
-String _relativeTime(DateTime time) {
+String _relativeTime(AppLocalizations l10n, DateTime time) {
   final difference = DateTime.now().difference(time);
   if (difference.inDays > 0) {
-    return '${difference.inDays}d ago';
+    return l10n.daysAgo(difference.inDays);
   }
   if (difference.inHours > 0) {
-    return '${difference.inHours}h ago';
+    return l10n.hoursAgo(difference.inHours);
   }
-  return '${difference.inMinutes}m ago';
+  return l10n.minutesAgo(difference.inMinutes);
 }
