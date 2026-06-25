@@ -86,6 +86,183 @@ class DemoRepository {
     );
   }
 
+  // ── Chart data ─────────────────────────────────────────────────────────────
+
+  Future<EnergyChartData> fetchEnergyChart(ChartGranularity granularity) async {
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    return switch (granularity) {
+      ChartGranularity.day => _energyDay(),
+      ChartGranularity.week => _energyWeek(),
+      ChartGranularity.month => _energyMonth(),
+    };
+  }
+
+  Future<PowerChartData> fetchPowerChart(ChartGranularity granularity) async {
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    return switch (granularity) {
+      ChartGranularity.day => _powerDay(),
+      ChartGranularity.week => _powerWeek(),
+      ChartGranularity.month => _powerMonth(),
+    };
+  }
+
+  Future<BatteryChartData> fetchBatteryChart(ChartGranularity granularity) async {
+    await Future<void>.delayed(const Duration(milliseconds: 160));
+    return switch (granularity) {
+      ChartGranularity.day => _batteryDay(),
+      ChartGranularity.week => _batteryWeek(),
+      ChartGranularity.month => _batteryMonth(),
+    };
+  }
+
+  // ── Energy data builders ──────────────────────────────────────────────────
+
+  EnergyChartData _energyDay() {
+    final gen = [0.0, 0.0, 0.6, 1.4, 2.3, 3.1, 3.8, 3.2, 2.1, 1.0, 0.6, 0.3];
+    final con = [0.9, 1.0, 1.4, 1.7, 2.0, 1.8, 1.6, 1.9, 2.2, 1.7, 1.5, 1.2];
+    final labels = ['06','08','10','12','14','16','18','20','22','00','02','04'];
+    return _buildEnergyChart(ChartGranularity.day, gen, con, labels);
+  }
+
+  EnergyChartData _energyWeek() {
+    final gen = [14.2, 18.6, 16.3, 20.1, 17.8, 15.5, 19.2];
+    final con = [12.1, 14.2, 13.6, 15.9, 14.8, 13.2, 16.1];
+    final labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return _buildEnergyChart(ChartGranularity.week, gen, con, labels);
+  }
+
+  EnergyChartData _energyMonth() {
+    final gen = [15.1,16.3,18.0,14.2,20.1,19.4,17.8,16.5,21.0,18.6,
+                 15.9,17.2,19.8,20.3,16.7,18.1,14.5,17.9,22.0,19.1,
+                 16.3,18.7,20.5,17.4,19.2,21.1,18.3,16.8,15.6,17.5];
+    final con = [13.2,14.1,15.8,12.6,14.9,16.2,15.1,13.8,16.5,14.2,
+                 13.5,14.8,16.1,15.3,13.9,14.6,12.8,15.2,17.1,15.8,
+                 13.9,15.4,16.8,14.7,15.9,17.2,15.3,14.1,13.2,14.9];
+    final labels = List<String>.generate(30, (i) => (i + 1).toString());
+    return _buildEnergyChart(ChartGranularity.month, gen, con, labels);
+  }
+
+  EnergyChartData _buildEnergyChart(
+    ChartGranularity g,
+    List<double> gen,
+    List<double> con,
+    List<String> labels,
+  ) {
+    final genPoints = List.generate(
+      gen.length,
+      (i) => ChartPoint(x: i.toDouble(), y: gen[i], label: labels[i]),
+    );
+    final conPoints = List.generate(
+      con.length,
+      (i) => ChartPoint(x: i.toDouble(), y: con[i], label: labels[i]),
+    );
+    return EnergyChartData(
+      granularity: g,
+      generationPoints: genPoints,
+      consumptionPoints: conPoints,
+      totalGenerationKwh: gen.fold(0, (a, b) => a + b),
+      totalConsumptionKwh: con.fold(0, (a, b) => a + b),
+      peakGenerationKwh: gen.fold<double>(0, (a, b) => b > a ? b : a),
+      peakConsumptionKwh: con.fold<double>(0, (a, b) => b > a ? b : a),
+    );
+  }
+
+  // ── Power data builders ───────────────────────────────────────────────────
+
+  PowerChartData _powerDay() {
+    final pv   = [0.0, 0.3, 1.2, 2.8, 3.8, 4.2, 3.9, 3.2, 2.0, 0.8, 0.2, 0.0];
+    final load = [1.6, 1.4, 1.8, 2.2, 1.9, 1.7, 1.6, 2.0, 2.3, 1.8, 1.5, 1.6];
+    final labels = ['06','08','10','12','14','16','18','20','22','00','02','04'];
+    return _buildPowerChart(ChartGranularity.day, pv, load, labels);
+  }
+
+  PowerChartData _powerWeek() {
+    final pv   = [1.8, 3.2, 2.7, 4.0, 3.5, 2.9, 3.7];
+    final load = [1.6, 1.9, 1.7, 2.1, 1.8, 1.7, 2.0];
+    final labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return _buildPowerChart(ChartGranularity.week, pv, load, labels);
+  }
+
+  PowerChartData _powerMonth() {
+    final pv = [2.1,2.8,3.5,2.0,4.0,3.8,3.2,2.9,4.1,3.2,
+                2.5,3.0,3.8,4.0,3.1,3.5,2.2,3.3,4.2,3.7,
+                2.9,3.4,3.9,3.1,3.7,4.1,3.5,3.0,2.8,3.2];
+    final load = [1.6,1.8,2.0,1.5,1.9,2.1,1.9,1.7,2.0,1.8,
+                  1.6,1.8,2.0,1.9,1.7,1.8,1.5,1.9,2.2,2.0,
+                  1.7,1.9,2.1,1.8,1.9,2.1,1.9,1.7,1.6,1.8];
+    final labels = List<String>.generate(30, (i) => (i + 1).toString());
+    return _buildPowerChart(ChartGranularity.month, pv, load, labels);
+  }
+
+  PowerChartData _buildPowerChart(
+    ChartGranularity g,
+    List<double> pv,
+    List<double> load,
+    List<String> labels,
+  ) {
+    final pvPoints = List.generate(
+      pv.length,
+      (i) => ChartPoint(x: i.toDouble(), y: pv[i], label: labels[i]),
+    );
+    final loadPoints = List.generate(
+      load.length,
+      (i) => ChartPoint(x: i.toDouble(), y: load[i], label: labels[i]),
+    );
+    final avgPv = pv.fold<double>(0, (a, b) => a + b) / pv.length;
+    final avgLoad = load.fold<double>(0, (a, b) => a + b) / load.length;
+    return PowerChartData(
+      granularity: g,
+      pvPowerPoints: pvPoints,
+      loadPowerPoints: loadPoints,
+      peakPvKw: pv.fold<double>(0, (a, b) => b > a ? b : a),
+      peakLoadKw: load.fold<double>(0, (a, b) => b > a ? b : a),
+      avgPvKw: avgPv,
+      avgLoadKw: avgLoad,
+    );
+  }
+
+  // ── Battery data builders ─────────────────────────────────────────────────
+
+  BatteryChartData _batteryDay() {
+    final soc = [92.0,88.0,80.0,72.0,68.0,74.0,80.0,84.0,80.0,76.0,72.0,78.0];
+    final labels = ['06','08','10','12','14','16','18','20','22','00','02','04'];
+    return _buildBatteryChart(ChartGranularity.day, soc, labels);
+  }
+
+  BatteryChartData _batteryWeek() {
+    final soc = [76.0, 82.0, 68.0, 85.0, 79.0, 73.0, 88.0];
+    final labels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    return _buildBatteryChart(ChartGranularity.week, soc, labels);
+  }
+
+  BatteryChartData _batteryMonth() {
+    final soc = [80.0,78.0,82.0,68.0,85.0,84.0,79.0,76.0,88.0,82.0,
+                 73.0,77.0,83.0,86.0,79.0,81.0,70.0,78.0,90.0,85.0,
+                 76.0,80.0,84.0,78.0,82.0,87.0,80.0,75.0,72.0,78.0];
+    final labels = List<String>.generate(30, (i) => (i + 1).toString());
+    return _buildBatteryChart(ChartGranularity.month, soc, labels);
+  }
+
+  BatteryChartData _buildBatteryChart(
+    ChartGranularity g,
+    List<double> soc,
+    List<String> labels,
+  ) {
+    final points = List.generate(
+      soc.length,
+      (i) => ChartPoint(x: i.toDouble(), y: soc[i], label: labels[i]),
+    );
+    final minSoc = soc.fold<double>(100, (a, b) => b < a ? b : a).round();
+    final maxSoc = soc.fold<double>(0, (a, b) => b > a ? b : a).round();
+    return BatteryChartData(
+      granularity: g,
+      socPoints: points,
+      currentSoc: soc.last.round(),
+      minSoc: minSoc,
+      maxSoc: maxSoc,
+    );
+  }
+
   StationOverview? get cachedOverview => _lastOverview;
   EnergyStatistics? get cachedStatistics => _lastStatistics;
 
