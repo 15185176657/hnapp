@@ -11,5 +11,9 @@
   "metricTodayGenerated": "今日发电量",
   "metricTodayUsed": "今日用电量",
   "metricTotalGenerated": "累计发电量",
-  "metricTotalUsed": "累计用电量"
+  "metricTotalUsed": "累计用电量",
+  "detailPeak": "峰值",
+  "detailAvg": "均值",
+  "errorLoadingData": "数据加载失败。",
+  "todayTrend": "今日趋势"
 }

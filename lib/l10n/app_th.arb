@@ -11,5 +11,9 @@
   "metricTodayGenerated": "ผลิตวันนี้",
   "metricTodayUsed": "ใช้วันนี้",
   "metricTotalGenerated": "ผลิตรวม",
-  "metricTotalUsed": "ใช้รวม"
+  "metricTotalUsed": "ใช้รวม",
+  "detailPeak": "สูงสุด",
+  "detailAvg": "เฉลี่ย",
+  "errorLoadingData": "โหลดข้อมูลล้มเหลว",
+  "todayTrend": "แนวโน้มวันนี้"
 }

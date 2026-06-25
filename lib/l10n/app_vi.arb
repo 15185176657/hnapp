@@ -11,5 +11,9 @@
   "metricTodayGenerated": "Phát hôm nay",
   "metricTodayUsed": "Dùng hôm nay",
   "metricTotalGenerated": "Tổng phát",
-  "metricTotalUsed": "Tổng dùng"
+  "metricTotalUsed": "Tổng dùng",
+  "detailPeak": "Đỉnh",
+  "detailAvg": "Trung bình",
+  "errorLoadingData": "Không tải được dữ liệu.",
+  "todayTrend": "Xu hướng hôm nay"
 }

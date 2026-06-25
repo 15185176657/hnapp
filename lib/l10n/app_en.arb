@@ -11,5 +11,9 @@
   "metricTodayGenerated": "Today generated",
   "metricTodayUsed": "Today used",
   "metricTotalGenerated": "Total generated",
-  "metricTotalUsed": "Total used"
+  "metricTotalUsed": "Total used",
+  "detailPeak": "Peak",
+  "detailAvg": "Avg",
+  "errorLoadingData": "Failed to load data.",
+  "todayTrend": "Today trend"
 }

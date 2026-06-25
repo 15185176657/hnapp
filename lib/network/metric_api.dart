@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../core/demo/demo_models.dart';
 
 /// Supported metric identifiers for `/metrics/{deviceId}/{metric}`.
@@ -63,7 +65,7 @@ abstract final class MetricApiAdapter {
   static String _label(DateTime time, ChartGranularity granularity) {
     return switch (granularity) {
       ChartGranularity.day => time.hour.toString().padLeft(2, '0'),
-      ChartGranularity.week => '${time.month}/${time.day}',
+      ChartGranularity.week => DateFormat.Md().format(time),
       ChartGranularity.month => time.day.toString(),
     };
   }

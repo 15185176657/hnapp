@@ -11,5 +11,9 @@
   "metricTodayGenerated": "Hasil hari ini",
   "metricTodayUsed": "Pakai hari ini",
   "metricTotalGenerated": "Total hasil",
-  "metricTotalUsed": "Total pakai"
+  "metricTotalUsed": "Total pakai",
+  "detailPeak": "Puncak",
+  "detailAvg": "Rata-rata",
+  "errorLoadingData": "Gagal memuat data.",
+  "todayTrend": "Tren hari ini"
 }
