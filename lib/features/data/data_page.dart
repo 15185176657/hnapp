@@ -111,7 +111,7 @@ class _DataPageState extends State<DataPage> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => MetricDetailPage(
-                            metric: MetricSeriesType.generation,
+                            metric: MetricSeriesType.todayGeneration,
                             title: l10n.metricTodayGenerated,
                             unit: 'kWh',
                             color: AppColors.solar,
@@ -130,7 +130,7 @@ class _DataPageState extends State<DataPage> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => MetricDetailPage(
-                            metric: MetricSeriesType.consumption,
+                            metric: MetricSeriesType.todayConsumption,
                             title: l10n.metricTodayUsed,
                             unit: 'kWh',
                             color: AppColors.ocean,
@@ -148,7 +148,7 @@ class _DataPageState extends State<DataPage> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => MetricDetailPage(
-                            metric: MetricSeriesType.generation,
+                            metric: MetricSeriesType.totalGeneration,
                             title: l10n.metricTotalGenerated,
                             unit: 'kWh',
                             color: AppColors.battery,
@@ -166,7 +166,7 @@ class _DataPageState extends State<DataPage> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => MetricDetailPage(
-                            metric: MetricSeriesType.consumption,
+                            metric: MetricSeriesType.totalConsumption,
                             title: l10n.metricTotalUsed,
                             unit: 'kWh',
                             color: AppColors.warning,
@@ -184,7 +184,7 @@ class _DataPageState extends State<DataPage> {
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => MetricDetailPage(
-                    metric: MetricSeriesType.generation,
+                    metric: MetricSeriesType.todayGeneration,
                     title: l10n.todayTrend,
                     unit: 'kWh',
                     color: AppColors.solar,

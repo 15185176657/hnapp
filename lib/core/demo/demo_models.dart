@@ -8,6 +8,10 @@ enum MetricSeriesType {
   pvPower,
   loadPower,
   batterySoc,
+  todayGeneration,
+  todayConsumption,
+  totalGeneration,
+  totalConsumption,
   generation,
   consumption,
 }

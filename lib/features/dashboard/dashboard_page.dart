@@ -341,7 +341,7 @@ class _MetricsGrid extends StatelessWidget {
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) => MetricDetailPage(
-                  metric: MetricSeriesType.generation,
+                  metric: MetricSeriesType.todayGeneration,
                   title: l10n.metricTodayGenerated,
                   unit: 'kWh',
                   color: AppColors.battery,

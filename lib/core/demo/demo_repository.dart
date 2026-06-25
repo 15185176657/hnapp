@@ -342,6 +342,30 @@ class DemoRepository {
         [76.0, 82.0, 68.0, 85.0, 79.0, 73.0, 88.0],
       (MetricSeriesType.batterySoc, ChartGranularity.month) =>
         [80.0,78.0,82.0,68.0,85.0,84.0,79.0,76.0,88.0,82.0,73.0,77.0,83.0,86.0,79.0,81.0,70.0,78.0,90.0,85.0,76.0,80.0,84.0,78.0,82.0,87.0,80.0,75.0,72.0,78.0],
+      (MetricSeriesType.todayGeneration, ChartGranularity.day) =>
+        [0.0, 0.0, 0.6, 1.4, 2.3, 3.1, 3.8, 3.2, 2.1, 1.0, 0.6, 0.3],
+      (MetricSeriesType.todayGeneration, ChartGranularity.week) =>
+        [14.2, 18.6, 16.3, 20.1, 17.8, 15.5, 19.2],
+      (MetricSeriesType.todayGeneration, ChartGranularity.month) =>
+        [15.1,16.3,18.0,14.2,20.1,19.4,17.8,16.5,21.0,18.6,15.9,17.2,19.8,20.3,16.7,18.1,14.5,17.9,22.0,19.1,16.3,18.7,20.5,17.4,19.2,21.1,18.3,16.8,15.6,17.5],
+      (MetricSeriesType.todayConsumption, ChartGranularity.day) =>
+        [0.9, 1.0, 1.4, 1.7, 2.0, 1.8, 1.6, 1.9, 2.2, 1.7, 1.5, 1.2],
+      (MetricSeriesType.todayConsumption, ChartGranularity.week) =>
+        [12.1, 14.2, 13.6, 15.9, 14.8, 13.2, 16.1],
+      (MetricSeriesType.todayConsumption, ChartGranularity.month) =>
+        [13.2,14.1,15.8,12.6,14.9,16.2,15.1,13.8,16.5,14.2,13.5,14.8,16.1,15.3,13.9,14.6,12.8,15.2,17.1,15.8,13.9,15.4,16.8,14.7,15.9,17.2,15.3,14.1,13.2,14.9],
+      (MetricSeriesType.totalGeneration, ChartGranularity.day) =>
+        [12520,12522,12524,12527,12530,12533,12537,12540,12542,12543,12544,12545],
+      (MetricSeriesType.totalGeneration, ChartGranularity.week) =>
+        [12725,12744,12761,12781,12800,12818,12840],
+      (MetricSeriesType.totalGeneration, ChartGranularity.month) =>
+        [12210,12226,12244,12258,12278,12297,12315,12332,12353,12371,12387,12404,12424,12444,12461,12479,12493,12511,12533,12552,12568,12587,12607,12624,12643,12664,12682,12699,12715,12733],
+      (MetricSeriesType.totalConsumption, ChartGranularity.day) =>
+        [10680,10681,10683,10685,10687,10688,10690,10692,10694,10695,10696,10698],
+      (MetricSeriesType.totalConsumption, ChartGranularity.week) =>
+        [10824,10838,10852,10868,10883,10896,10912],
+      (MetricSeriesType.totalConsumption, ChartGranularity.month) =>
+        [10362,10376,10392,10405,10420,10436,10451,10465,10481,10495,10508,10523,10539,10554,10568,10583,10596,10612,10629,10645,10659,10674,10691,10706,10722,10739,10754,10768,10781,10796],
       (MetricSeriesType.generation, ChartGranularity.day) =>
         [0.0, 0.0, 0.6, 1.4, 2.3, 3.1, 3.8, 3.2, 2.1, 1.0, 0.6, 0.3],
       (MetricSeriesType.generation, ChartGranularity.week) =>
