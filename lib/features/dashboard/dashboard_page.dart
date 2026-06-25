@@ -221,9 +221,9 @@ class _BatteryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final color = soc < 30
-        ? AppColors.warning
-        : (soc < 15 ? AppColors.danger : AppColors.battery);
+    final color = soc < 15
+        ? AppColors.danger
+        : (soc < 30 ? AppColors.warning : AppColors.battery);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
