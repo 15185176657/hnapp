@@ -321,15 +321,19 @@ class _BatterySocChart extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              Container(
-                width: 20,
-                height: 2,
-                decoration: BoxDecoration(
-                  color: AppColors.danger.withAlpha(180),
-                  borderRadius: BorderRadius.circular(1),
-                ),
-              ),
-              const SizedBox(width: 6),
+              // Dashed line indicator matching the chart threshold style.
+              ...List.generate(3, (_) => Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 5,
+                    height: 2,
+                    color: AppColors.danger.withAlpha(180),
+                  ),
+                  const SizedBox(width: 2),
+                ],
+              )),
+              const SizedBox(width: 4),
               Text(
                 AppLocalizations.of(context).detailBatteryLowThreshold,
                 style: theme.textTheme.bodySmall,
