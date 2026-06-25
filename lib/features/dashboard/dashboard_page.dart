@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
 import '../../core/demo/demo_models.dart';
 import '../../core/demo/demo_repository.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/metric_card.dart';
 import '../../shared/widgets/section_card.dart';
@@ -58,11 +60,12 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final overview = _overview;
     return RefreshIndicator(
       onRefresh: _loadOverview,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
           _Header(
             selectedScenario: AppScope.of(context).demoRepository.scenario,
@@ -81,9 +84,9 @@ class _DashboardPageState extends State<DashboardPage> {
             if (_showWeakNetwork) ...[
               StateMessage(
                 icon: Icons.wifi_off_rounded,
-                title: 'Weak network',
-                message: 'Showing the latest successful data. Pull down to retry.',
-                actionLabel: 'Retry',
+                title: l10n.weakNetworkTitle,
+                message: l10n.weakNetworkMessage,
+                actionLabel: l10n.retry,
                 onAction: _loadOverview,
               ),
               const SizedBox(height: 12),
@@ -95,18 +98,21 @@ class _DashboardPageState extends State<DashboardPage> {
             SectionCard(
               child: Row(
                 children: [
-                  const Icon(Icons.schedule_rounded, color: AppColors.muted),
+                  Icon(
+                    Icons.schedule_rounded,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Last updated ${_formatTime(overview.lastUpdated)}',
+                      l10n.lastUpdated(_formatTime(overview.lastUpdated)),
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ),
                   TextButton.icon(
                     onPressed: _loadOverview,
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Refresh'),
+                    label: Text(l10n.refresh),
                   ),
                 ],
               ),
@@ -126,34 +132,39 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Off-grid solar', style: Theme.of(context).textTheme.headlineSmall),
+        Text(l10n.dashboardTitle, style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 6),
         Text(
-          'Clear power, battery and alert status for daily decisions.',
+          l10n.dashboardSubtitle,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        const SizedBox(height: 12),
-        DropdownButtonFormField<DemoScenario>(
-          initialValue: selectedScenario,
-          decoration: const InputDecoration(
-            labelText: 'Demo scenario',
-            border: OutlineInputBorder(),
+        // The demo scenario switcher is a development-only aid and must not be
+        // visible in release builds.
+        if (kDebugMode) ...[
+          const SizedBox(height: 12),
+          DropdownButtonFormField<DemoScenario>(
+            initialValue: selectedScenario,
+            decoration: InputDecoration(
+              labelText: l10n.demoScenario,
+              border: const OutlineInputBorder(),
+            ),
+            items: DemoScenario.values.map((scenario) {
+              return DropdownMenuItem(
+                value: scenario,
+                child: Text(_scenarioLabel(scenario)),
+              );
+            }).toList(),
+            onChanged: (scenario) {
+              if (scenario != null) {
+                onScenarioChanged(scenario);
+              }
+            },
           ),
-          items: DemoScenario.values.map((scenario) {
-            return DropdownMenuItem(
-              value: scenario,
-              child: Text(_scenarioLabel(scenario)),
-            );
-          }).toList(),
-          onChanged: (scenario) {
-            if (scenario != null) {
-              onScenarioChanged(scenario);
-            }
-          },
-        ),
+        ],
       ],
     );
   }
@@ -166,7 +177,8 @@ class _StatusSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final status = _statusPresentation(overview.status, overview.isDeviceOnline);
+    final l10n = AppLocalizations.of(context);
+    final status = _statusPresentation(l10n, overview.status, overview.isDeviceOnline);
     return SectionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,14 +199,64 @@ class _StatusSummary extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
+          _BatteryBar(soc: overview.batterySoc),
+          const SizedBox(height: 16),
           Text(
             overview.isDeviceOnline
-                ? 'System can supply power for about ${overview.remainingHours.toStringAsFixed(1)} hours at the current load.'
-                : 'Device is offline. Check the gateway power and signal.',
+                ? l10n.remainingHours(overview.remainingHours.toStringAsFixed(1))
+                : l10n.deviceOfflineHint,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BatteryBar extends StatelessWidget {
+  const _BatteryBar({required this.soc});
+
+  final int soc;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final color = soc < 30
+        ? AppColors.warning
+        : (soc < 15 ? AppColors.danger : AppColors.battery);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.battery_charging_full_rounded, size: 18, color: color),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                l10n.metricBatterySoc,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            Text(
+              '$soc%',
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium
+                  ?.copyWith(color: color),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: LinearProgressIndicator(
+            value: (soc / 100).clamp(0.0, 1.0),
+            minHeight: 10,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -206,41 +268,42 @@ class _MetricsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 390;
         final cards = [
           MetricCard(
-            label: 'PV power',
+            label: l10n.metricPvPower,
             value: overview.pvPowerKw.toStringAsFixed(1),
             unit: 'kW',
             icon: Icons.wb_sunny_rounded,
             color: AppColors.solar,
-            caption: 'Current solar output',
+            caption: l10n.metricPvPowerCaption,
           ),
           MetricCard(
-            label: 'Load power',
+            label: l10n.metricLoadPower,
             value: overview.loadPowerKw.toStringAsFixed(1),
             unit: 'kW',
             icon: Icons.home_work_rounded,
             color: AppColors.ocean,
-            caption: 'Current home demand',
+            caption: l10n.metricLoadPowerCaption,
           ),
           MetricCard(
-            label: 'Battery SOC',
+            label: l10n.metricBatterySoc,
             value: overview.batterySoc.toString(),
             unit: '%',
             icon: Icons.battery_charging_full_rounded,
             color: overview.batterySoc < 30 ? AppColors.warning : AppColors.battery,
-            caption: 'Remaining battery level',
+            caption: l10n.metricBatterySocCaption,
           ),
           MetricCard(
-            label: 'Today generated',
+            label: l10n.metricTodayGenerated,
             value: overview.todayGenerationKwh.toStringAsFixed(1),
             unit: 'kWh',
             icon: Icons.bolt_rounded,
             color: AppColors.battery,
-            caption: 'Used ${overview.todayConsumptionKwh.toStringAsFixed(1)} kWh today',
+            caption: l10n.todayUsedCaption(overview.todayConsumptionKwh.toStringAsFixed(1)),
           ),
         ];
 
@@ -259,18 +322,19 @@ class _MetricsGrid extends StatelessWidget {
 }
 
 ({String label, IconData icon, Color color}) _statusPresentation(
+  AppLocalizations l10n,
   SystemStatus status,
   bool online,
 ) {
   if (!online) {
-    return (label: 'Offline', icon: Icons.cloud_off_rounded, color: AppColors.danger);
+    return (label: l10n.statusOffline, icon: Icons.cloud_off_rounded, color: AppColors.danger);
   }
   return switch (status) {
-    SystemStatus.normal => (label: 'Normal', icon: Icons.check_circle_rounded, color: AppColors.battery),
-    SystemStatus.charging => (label: 'Charging', icon: Icons.battery_charging_full_rounded, color: AppColors.battery),
-    SystemStatus.discharging => (label: 'Discharging', icon: Icons.electric_bolt_rounded, color: AppColors.ocean),
-    SystemStatus.lowBattery => (label: 'Low battery', icon: Icons.battery_alert_rounded, color: AppColors.warning),
-    SystemStatus.fault => (label: 'Action needed', icon: Icons.report_rounded, color: AppColors.danger),
+    SystemStatus.normal => (label: l10n.statusNormal, icon: Icons.check_circle_rounded, color: AppColors.battery),
+    SystemStatus.charging => (label: l10n.statusCharging, icon: Icons.battery_charging_full_rounded, color: AppColors.battery),
+    SystemStatus.discharging => (label: l10n.statusDischarging, icon: Icons.electric_bolt_rounded, color: AppColors.ocean),
+    SystemStatus.lowBattery => (label: l10n.statusLowBattery, icon: Icons.battery_alert_rounded, color: AppColors.warning),
+    SystemStatus.fault => (label: l10n.statusActionNeeded, icon: Icons.report_rounded, color: AppColors.danger),
   };
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../app_scope.dart';
 import '../../core/demo/demo_models.dart';
 import '../../core/demo/demo_repository.dart';
+import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/metric_card.dart';
 import '../../shared/widgets/section_card.dart';
@@ -58,16 +59,17 @@ class _DataPageState extends State<DataPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final statistics = _statistics;
     return RefreshIndicator(
       onRefresh: _loadStatistics,
       child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          Text('Energy data', style: Theme.of(context).textTheme.headlineSmall),
+          Text(l10n.dataTitle, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 6),
           Text(
-            'Generation and consumption trends for daily energy planning.',
+            l10n.dataSubtitle,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 16),
@@ -80,9 +82,9 @@ class _DataPageState extends State<DataPage> {
             if (_showWeakNetwork) ...[
               StateMessage(
                 icon: Icons.wifi_off_rounded,
-                title: 'Latest saved data',
-                message: 'The app kept your previous chart because the refresh failed.',
-                actionLabel: 'Retry',
+                title: l10n.savedDataTitle,
+                message: l10n.savedDataMessage,
+                actionLabel: l10n.retry,
                 onAction: _loadStatistics,
               ),
               const SizedBox(height: 12),
@@ -99,30 +101,30 @@ class _DataPageState extends State<DataPage> {
                   childAspectRatio: isNarrow ? 2.25 : 1.12,
                   children: [
                     MetricCard(
-                      label: 'Today generated',
+                      label: l10n.metricTodayGenerated,
                       value: statistics.todayGenerationKwh.toStringAsFixed(1),
                       unit: 'kWh',
                       icon: Icons.wb_sunny_rounded,
                       color: AppColors.solar,
-                      caption: 'Month ${statistics.monthGenerationKwh.toStringAsFixed(0)} kWh',
+                      caption: l10n.monthCaption(statistics.monthGenerationKwh.toStringAsFixed(0)),
                     ),
                     MetricCard(
-                      label: 'Today used',
+                      label: l10n.metricTodayUsed,
                       value: statistics.todayConsumptionKwh.toStringAsFixed(1),
                       unit: 'kWh',
                       icon: Icons.power_rounded,
                       color: AppColors.ocean,
-                      caption: 'Month ${statistics.monthConsumptionKwh.toStringAsFixed(0)} kWh',
+                      caption: l10n.monthCaption(statistics.monthConsumptionKwh.toStringAsFixed(0)),
                     ),
                     MetricCard(
-                      label: 'Total generated',
+                      label: l10n.metricTotalGenerated,
                       value: statistics.totalGenerationKwh.toStringAsFixed(0),
                       unit: 'kWh',
                       icon: Icons.auto_graph_rounded,
                       color: AppColors.battery,
                     ),
                     MetricCard(
-                      label: 'Total used',
+                      label: l10n.metricTotalUsed,
                       value: statistics.totalConsumptionKwh.toStringAsFixed(0),
                       unit: 'kWh',
                       icon: Icons.insights_rounded,
@@ -137,13 +139,14 @@ class _DataPageState extends State<DataPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Today trend', style: Theme.of(context).textTheme.titleMedium),
+                  Text(l10n.todayTrend, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: 4),
-                  Text('Solar generation vs. home consumption', style: Theme.of(context).textTheme.bodyMedium),
+                  Text(l10n.todayTrendSubtitle, style: Theme.of(context).textTheme.bodyMedium),
                   const SizedBox(height: 16),
                   SimpleBarChart(
                     primaryValues: statistics.hourlyGeneration,
                     secondaryValues: statistics.hourlyConsumption,
+                    labels: _hourLabels(statistics.hourlyGeneration.length),
                   ),
                   const SizedBox(height: 12),
                   const _Legend(),
@@ -157,17 +160,28 @@ class _DataPageState extends State<DataPage> {
   }
 }
 
+/// Builds evenly spaced hour-of-day markers for the daily trend chart so each
+/// bar group can be tied back to a time. The demo dataset spans roughly the
+/// daylight window, sampled every two hours.
+List<String> _hourLabels(int count) {
+  return List<String>.generate(count, (index) {
+    final hour = (6 + index * 2) % 24;
+    return hour.toString();
+  });
+}
+
 class _Legend extends StatelessWidget {
   const _Legend();
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Wrap(
       spacing: 16,
       runSpacing: 8,
-      children: const [
-        _LegendItem(color: AppColors.solar, label: 'Generation'),
-        _LegendItem(color: AppColors.ocean, label: 'Consumption'),
+      children: [
+        _LegendItem(color: AppColors.solar, label: l10n.legendGeneration),
+        _LegendItem(color: AppColors.ocean, label: l10n.legendConsumption),
       ],
     );
   }
