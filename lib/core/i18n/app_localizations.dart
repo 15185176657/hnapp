@@ -157,6 +157,10 @@ class AppLocalizations {
   String get detailEnergyTitle => _t('detailEnergyTitle');
   String get detailPowerTitle => _t('detailPowerTitle');
   String get detailBatteryTitle => _t('detailBatteryTitle');
+  String get detailPvPowerTitle => _t('detailPvPowerTitle');
+  String get detailLoadPowerTitle => _t('detailLoadPowerTitle');
+  String get detailGenerationTitle => _t('detailGenerationTitle');
+  String get detailConsumptionTitle => _t('detailConsumptionTitle');
   String get detailPeak => _t('detailPeak');
   String get detailAvg => _t('detailAvg');
   String get detailBatteryRange => _t('detailBatteryRange');
@@ -253,6 +257,10 @@ class AppLocalizations {
       'detailEnergyTitle': 'Energy detail',
       'detailPowerTitle': 'Power flow detail',
       'detailBatteryTitle': 'Battery detail',
+      'detailPvPowerTitle': 'PV Power',
+      'detailLoadPowerTitle': 'Load Power',
+      'detailGenerationTitle': 'Generation',
+      'detailConsumptionTitle': 'Consumption',
       'detailPeak': 'Peak',
       'detailAvg': 'Avg',
       'detailBatteryRange': 'SOC range',
@@ -342,6 +350,10 @@ class AppLocalizations {
       'detailEnergyTitle': 'รายละเอียดพลังงาน',
       'detailPowerTitle': 'รายละเอียดกำลังไฟ',
       'detailBatteryTitle': 'รายละเอียดแบตเตอรี่',
+      'detailPvPowerTitle': 'กำลังผลิตไฟ',
+      'detailLoadPowerTitle': 'กำลังโหลด',
+      'detailGenerationTitle': 'การผลิต',
+      'detailConsumptionTitle': 'การใช้',
       'detailPeak': 'สูงสุด',
       'detailAvg': 'เฉลี่ย',
       'detailBatteryRange': 'ช่วง SOC',
@@ -437,6 +449,10 @@ class AppLocalizations {
       'detailEnergyTitle': 'Chi tiết năng lượng',
       'detailPowerTitle': 'Chi tiết công suất',
       'detailBatteryTitle': 'Chi tiết pin',
+      'detailPvPowerTitle': 'Công suất PV',
+      'detailLoadPowerTitle': 'Công suất tải',
+      'detailGenerationTitle': 'Sản xuất',
+      'detailConsumptionTitle': 'Tiêu thụ',
       'detailPeak': 'Đỉnh',
       'detailAvg': 'TB',
       'detailBatteryRange': 'Phạm vi SOC',
@@ -533,6 +549,10 @@ class AppLocalizations {
       'detailEnergyTitle': 'Detail energi',
       'detailPowerTitle': 'Detail daya',
       'detailBatteryTitle': 'Detail baterai',
+      'detailPvPowerTitle': 'Daya PV',
+      'detailLoadPowerTitle': 'Daya beban',
+      'detailGenerationTitle': 'Produksi',
+      'detailConsumptionTitle': 'Konsumsi',
       'detailPeak': 'Puncak',
       'detailAvg': 'Rata-rata',
       'detailBatteryRange': 'Rentang SOC',
@@ -621,6 +641,10 @@ class AppLocalizations {
       'detailEnergyTitle': '能源详情',
       'detailPowerTitle': '功率详情',
       'detailBatteryTitle': '电池详情',
+      'detailPvPowerTitle': '光伏功率',
+      'detailLoadPowerTitle': '负载功率',
+      'detailGenerationTitle': '发电量',
+      'detailConsumptionTitle': '用电量',
       'detailPeak': '峰值',
       'detailAvg': '均值',
       'detailBatteryRange': 'SOC 范围',

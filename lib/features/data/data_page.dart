@@ -110,7 +110,7 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthGenerationKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                         ),
                       ),
                     ),
@@ -123,7 +123,7 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthConsumptionKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.consumption),
                         ),
                       ),
                     ),
@@ -135,7 +135,7 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.battery,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                         ),
                       ),
                     ),
@@ -147,7 +147,7 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.warning,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.consumption),
                         ),
                       ),
                     ),
@@ -159,7 +159,7 @@ class _DataPageState extends State<DataPage> {
             InkWell(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => const EnergyDetailPage(),
+                  builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                 ),
               ),
               borderRadius: BorderRadius.circular(16),
