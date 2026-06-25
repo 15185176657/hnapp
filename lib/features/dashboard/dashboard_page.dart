@@ -285,7 +285,7 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricPvPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => const PowerDetailPage(metric: PowerMetric.pv),
               ),
             ),
           ),
@@ -298,7 +298,7 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricLoadPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => const PowerDetailPage(metric: PowerMetric.load),
               ),
             ),
           ),
@@ -324,7 +324,7 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.todayUsedCaption(overview.todayConsumptionKwh.toStringAsFixed(1)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const EnergyDetailPage(),
+                builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
               ),
             ),
           ),

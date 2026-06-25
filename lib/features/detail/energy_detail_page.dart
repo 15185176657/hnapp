@@ -8,10 +8,12 @@ import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/section_card.dart';
 
-/// Detail page showing generation + consumption bar chart with Day/Week/Month
-/// granularity tabs.
+/// Detail page showing a single energy metric (generation or consumption) as a
+/// bar chart with Day/Week/Month granularity tabs.
 class EnergyDetailPage extends StatefulWidget {
-  const EnergyDetailPage({super.key});
+  const EnergyDetailPage({super.key, this.metric = EnergyMetric.generation});
+
+  final EnergyMetric metric;
 
   @override
   State<EnergyDetailPage> createState() => _EnergyDetailPageState();
@@ -61,8 +63,11 @@ class _EnergyDetailPageState extends State<EnergyDetailPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final title = widget.metric == EnergyMetric.generation
+        ? l10n.detailGenerationTitle
+        : l10n.detailConsumptionTitle;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.detailEnergyTitle)),
+      appBar: AppBar(title: Text(title)),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
@@ -99,11 +104,9 @@ class _EnergyDetailPageState extends State<EnergyDetailPage> {
                 ),
               )
             else if (_data != null) ...[
-              _SummaryRow(data: _data!),
+              _SummaryTile(data: _data!, metric: widget.metric),
               const SizedBox(height: 16),
-              _EnergyBarChart(data: _data!),
-              const SizedBox(height: 12),
-              _Legend(),
+              _EnergyBarChart(data: _data!, metric: widget.metric),
             ],
           ],
         ),
@@ -114,71 +117,30 @@ class _EnergyDetailPageState extends State<EnergyDetailPage> {
 
 // ── Summary metrics ─────────────────────────────────────────────────────────
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.data});
+class _SummaryTile extends StatelessWidget {
+  const _SummaryTile({required this.data, required this.metric});
   final EnergyChartData data;
+  final EnergyMetric metric;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.legendGeneration,
-            value: data.totalGenerationKwh.toStringAsFixed(1),
-            unit: 'kWh',
-            color: AppColors.solar,
-            icon: Icons.wb_sunny_rounded,
-            sub: '${l10n.detailPeak} ${data.peakGenerationKwh.toStringAsFixed(1)} kWh',
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.legendConsumption,
-            value: data.totalConsumptionKwh.toStringAsFixed(1),
-            unit: 'kWh',
-            color: AppColors.ocean,
-            icon: Icons.power_rounded,
-            sub: '${l10n.detailPeak} ${data.peakConsumptionKwh.toStringAsFixed(1)} kWh',
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SummaryTile extends StatelessWidget {
-  const _SummaryTile({
-    required this.label,
-    required this.value,
-    required this.unit,
-    required this.color,
-    required this.icon,
-    required this.sub,
-  });
-
-  final String label;
-  final String value;
-  final String unit;
-  final Color color;
-  final IconData icon;
-  final String sub;
-
-  @override
-  Widget build(BuildContext context) {
+    final isGen = metric == EnergyMetric.generation;
     return SectionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(icon, color: color, size: 18),
+              Icon(
+                isGen ? Icons.wb_sunny_rounded : Icons.power_rounded,
+                color: isGen ? AppColors.solar : AppColors.ocean,
+                size: 18,
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  label,
+                  isGen ? l10n.legendGeneration : l10n.legendConsumption,
                   style: Theme.of(context).textTheme.bodySmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -191,16 +153,23 @@ class _SummaryTile extends StatelessWidget {
             text: TextSpan(
               style: Theme.of(context).textTheme.titleLarge,
               children: [
-                TextSpan(text: value),
                 TextSpan(
-                  text: ' $unit',
+                  text: isGen
+                      ? data.totalGenerationKwh.toStringAsFixed(1)
+                      : data.totalConsumptionKwh.toStringAsFixed(1),
+                ),
+                TextSpan(
+                  text: ' kWh',
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
             ),
           ),
           const SizedBox(height: 4),
-          Text(sub, style: Theme.of(context).textTheme.bodySmall),
+          Text(
+            '${l10n.detailPeak} ${isGen ? data.peakGenerationKwh.toStringAsFixed(1) : data.peakConsumptionKwh.toStringAsFixed(1)} kWh',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ],
       ),
     );
@@ -210,38 +179,31 @@ class _SummaryTile extends StatelessWidget {
 // ── Bar chart ────────────────────────────────────────────────────────────────
 
 class _EnergyBarChart extends StatelessWidget {
-  const _EnergyBarChart({required this.data});
+  const _EnergyBarChart({required this.data, required this.metric});
   final EnergyChartData data;
+  final EnergyMetric metric;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final genPoints = data.generationPoints;
-    final conPoints = data.consumptionPoints;
+    final isGen = metric == EnergyMetric.generation;
+    final points = isGen ? data.generationPoints : data.consumptionPoints;
+    final color = isGen ? AppColors.solar : AppColors.ocean;
 
-    final maxY = [
-      ...genPoints.map((p) => p.y),
-      ...conPoints.map((p) => p.y),
-    ].fold<double>(1, (m, v) => v > m ? v : m);
+    final maxY = points
+        .map((p) => p.y)
+        .fold<double>(1, (m, v) => v > m ? v : m);
 
-    // Subsample labels so the axis is not too crowded.
-    final labelStep = _labelStep(genPoints.length);
+    final labelStep = _labelStep(points.length);
 
-    final barGroups = List.generate(genPoints.length, (i) {
+    final barGroups = List.generate(points.length, (i) {
       return BarChartGroupData(
         x: i,
-        barsSpace: 3,
         barRods: [
           BarChartRodData(
-            toY: genPoints[i].y,
-            color: AppColors.solar,
-            width: _barWidth(genPoints.length),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-          ),
-          BarChartRodData(
-            toY: conPoints[i].y,
-            color: AppColors.ocean,
-            width: _barWidth(genPoints.length),
+            toY: points[i].y,
+            color: color,
+            width: _barWidth(points.length),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
         ],
@@ -294,14 +256,14 @@ class _EnergyBarChart extends StatelessWidget {
                   reservedSize: 22,
                   getTitlesWidget: (v, meta) {
                     final i = v.toInt();
-                    if (i < 0 || i >= genPoints.length) {
+                    if (i < 0 || i >= points.length) {
                       return const SizedBox.shrink();
                     }
                     if (i % labelStep != 0) return const SizedBox.shrink();
                     return Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        genPoints[i].label,
+                        points[i].label,
                         style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
                       ),
                     );
@@ -316,7 +278,7 @@ class _EnergyBarChart extends StatelessWidget {
                   color: theme.colorScheme.outlineVariant,
                 ),
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  final label = rodIndex == 0
+                  final label = isGen
                       ? AppLocalizations.of(context).legendGeneration
                       : AppLocalizations.of(context).legendConsumption;
                   return BarTooltipItem(
@@ -372,48 +334,6 @@ class _GranularityToggle extends StatelessWidget {
       ],
       selected: {current},
       onSelectionChanged: (s) => onChanged(s.first),
-    );
-  }
-}
-
-// ── Legend ───────────────────────────────────────────────────────────────────
-
-class _Legend extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Wrap(
-      spacing: 16,
-      runSpacing: 8,
-      children: [
-        _LegendDot(color: AppColors.solar, label: l10n.legendGeneration),
-        _LegendDot(color: AppColors.ocean, label: l10n.legendConsumption),
-      ],
-    );
-  }
-}
-
-class _LegendDot extends StatelessWidget {
-  const _LegendDot({required this.color, required this.label});
-  final Color color;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(label, style: Theme.of(context).textTheme.bodyMedium),
-      ],
     );
   }
 }
