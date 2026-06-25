@@ -10,9 +10,7 @@ import '../../shared/widgets/metric_card.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/state_message.dart';
 import '../../shared/widgets/status_pill.dart';
-import '../detail/battery_detail_page.dart';
-import '../detail/energy_detail_page.dart';
-import '../detail/power_detail_page.dart';
+import '../detail/metric_detail_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -285,7 +283,13 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricPvPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => MetricDetailPage(
+                  metric: MetricSeriesType.pvPower,
+                  title: l10n.metricPvPower,
+                  unit: 'kW',
+                  color: AppColors.solar,
+                  icon: Icons.wb_sunny_rounded,
+                ),
               ),
             ),
           ),
@@ -298,7 +302,13 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricLoadPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => MetricDetailPage(
+                  metric: MetricSeriesType.loadPower,
+                  title: l10n.metricLoadPower,
+                  unit: 'kW',
+                  color: AppColors.ocean,
+                  icon: Icons.home_work_rounded,
+                ),
               ),
             ),
           ),
@@ -311,7 +321,13 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricBatterySocCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const BatteryDetailPage(),
+                builder: (_) => MetricDetailPage(
+                  metric: MetricSeriesType.batterySoc,
+                  title: l10n.metricBatterySoc,
+                  unit: '%',
+                  color: overview.batterySoc < 30 ? AppColors.warning : AppColors.battery,
+                  icon: Icons.battery_charging_full_rounded,
+                ),
               ),
             ),
           ),
@@ -324,7 +340,13 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.todayUsedCaption(overview.todayConsumptionKwh.toStringAsFixed(1)),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const EnergyDetailPage(),
+                builder: (_) => MetricDetailPage(
+                  metric: MetricSeriesType.generation,
+                  title: l10n.metricTodayGenerated,
+                  unit: 'kWh',
+                  color: AppColors.battery,
+                  icon: Icons.bolt_rounded,
+                ),
               ),
             ),
           ),

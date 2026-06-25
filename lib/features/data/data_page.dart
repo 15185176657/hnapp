@@ -9,7 +9,7 @@ import '../../shared/widgets/metric_card.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/simple_bar_chart.dart';
 import '../../shared/widgets/state_message.dart';
-import '../detail/energy_detail_page.dart';
+import '../detail/metric_detail_page.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});
@@ -110,7 +110,13 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthGenerationKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => MetricDetailPage(
+                            metric: MetricSeriesType.generation,
+                            title: l10n.metricTodayGenerated,
+                            unit: 'kWh',
+                            color: AppColors.solar,
+                            icon: Icons.wb_sunny_rounded,
+                          ),
                         ),
                       ),
                     ),
@@ -123,7 +129,13 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthConsumptionKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => MetricDetailPage(
+                            metric: MetricSeriesType.consumption,
+                            title: l10n.metricTodayUsed,
+                            unit: 'kWh',
+                            color: AppColors.ocean,
+                            icon: Icons.power_rounded,
+                          ),
                         ),
                       ),
                     ),
@@ -135,7 +147,13 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.battery,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => MetricDetailPage(
+                            metric: MetricSeriesType.generation,
+                            title: l10n.metricTotalGenerated,
+                            unit: 'kWh',
+                            color: AppColors.battery,
+                            icon: Icons.auto_graph_rounded,
+                          ),
                         ),
                       ),
                     ),
@@ -147,7 +165,13 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.warning,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => MetricDetailPage(
+                            metric: MetricSeriesType.consumption,
+                            title: l10n.metricTotalUsed,
+                            unit: 'kWh',
+                            color: AppColors.warning,
+                            icon: Icons.insights_rounded,
+                          ),
                         ),
                       ),
                     ),
@@ -159,7 +183,13 @@ class _DataPageState extends State<DataPage> {
             InkWell(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => const EnergyDetailPage(),
+                  builder: (_) => MetricDetailPage(
+                    metric: MetricSeriesType.generation,
+                    title: l10n.todayTrend,
+                    unit: 'kWh',
+                    color: AppColors.solar,
+                    icon: Icons.show_chart_rounded,
+                  ),
                 ),
               ),
               borderRadius: BorderRadius.circular(16),

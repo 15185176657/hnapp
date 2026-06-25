@@ -74,58 +74,59 @@ class _AlertCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final presentation = _severityPresentation(l10n, alert.severity);
     final accent = alert.isResolved ? AppColors.battery : presentation.color;
-    return SectionCard(
-      padding: EdgeInsets.zero,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Severity accent bar for fast scanning.
-            Container(
-              width: 4,
-              decoration: BoxDecoration(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      clipBehavior: Clip.hardEdge,
+      child: SectionCard(
+        padding: EdgeInsets.zero,
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                key: const Key('alertAccentBar'),
+                width: 4,
                 color: accent,
-                borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
-                        ),
-                        StatusPill(
-                          label: alert.isResolved ? l10n.resolved : presentation.label,
-                          icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
-                          color: accent,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(12),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
+                          ),
+                          StatusPill(
+                            label: alert.isResolved ? l10n.resolved : presentation.label,
+                            icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
+                            color: accent,
+                          ),
+                        ],
                       ),
-                      child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

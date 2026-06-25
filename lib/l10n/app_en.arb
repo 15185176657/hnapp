@@ -1,0 +1,15 @@
+{
+  "granularityDay": "Day",
+  "granularityWeek": "Week",
+  "granularityMonth": "Month",
+  "loading": "Loading...",
+  "noData": "No data",
+  "retry": "Retry",
+  "metricPvPower": "PV power",
+  "metricLoadPower": "Load power",
+  "metricBatterySoc": "Battery SOC",
+  "metricTodayGenerated": "Today generated",
+  "metricTodayUsed": "Today used",
+  "metricTotalGenerated": "Total generated",
+  "metricTotalUsed": "Total used"
+}

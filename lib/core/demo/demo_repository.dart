@@ -1,4 +1,5 @@
 import 'demo_models.dart';
+import '../../network/metric_api.dart';
 
 enum DemoScenario { normal, lowBattery, offline, overload, refreshFailed }
 
@@ -113,6 +114,34 @@ class DemoRepository {
       ChartGranularity.week => _batteryWeek(),
       ChartGranularity.month => _batteryMonth(),
     };
+  }
+
+  Future<MetricChartData> fetchMetricChart(
+    MetricSeriesType metric,
+    ChartGranularity granularity,
+  ) async {
+    await Future<void>.delayed(const Duration(milliseconds: 160));
+    final payload = _metricPayload(metric, granularity);
+    final response = MetricApiAdapter.fromPayload(payload);
+    final points = MetricApiAdapter.toChartPoints(response, granularity);
+    if (points.isEmpty) {
+      return MetricChartData(
+        granularity: granularity,
+        points: const [],
+        latest: 0,
+        peak: 0,
+        average: 0,
+      );
+    }
+    final values = points.map((p) => p.y).toList(growable: false);
+    final sum = values.fold<double>(0, (a, b) => a + b);
+    return MetricChartData(
+      granularity: granularity,
+      points: points,
+      latest: values.last,
+      peak: values.fold<double>(0, (a, b) => b > a ? b : a),
+      average: sum / values.length,
+    );
   }
 
   // ── Energy data builders ──────────────────────────────────────────────────
@@ -265,6 +294,68 @@ class DemoRepository {
 
   StationOverview? get cachedOverview => _lastOverview;
   EnergyStatistics? get cachedStatistics => _lastStatistics;
+
+  Map<String, dynamic> _metricPayload(
+    MetricSeriesType metric,
+    ChartGranularity granularity,
+  ) {
+    final now = DateTime.now();
+    final values = _metricValues(metric, granularity);
+    final start = switch (granularity) {
+      ChartGranularity.day =>
+        DateTime(now.year, now.month, now.day, now.hour - values.length + 1),
+      ChartGranularity.week => now.subtract(Duration(days: values.length - 1)),
+      ChartGranularity.month =>
+        DateTime(now.year, now.month, now.day).subtract(Duration(days: values.length - 1)),
+    };
+    final series = List<Map<String, dynamic>>.generate(values.length, (index) {
+      final timestamp = switch (granularity) {
+        ChartGranularity.day => start.add(Duration(hours: index)),
+        ChartGranularity.week => start.add(Duration(days: index)),
+        ChartGranularity.month => start.add(Duration(days: index)),
+      };
+      return {
+        'timestamp': timestamp.toIso8601String(),
+        'value': values[index],
+      };
+    }, growable: false);
+    return {'series': series};
+  }
+
+  List<double> _metricValues(MetricSeriesType metric, ChartGranularity granularity) {
+    return switch ((metric, granularity)) {
+      (MetricSeriesType.pvPower, ChartGranularity.day) =>
+        [0.0, 0.2, 0.8, 1.7, 2.9, 3.6, 4.1, 3.8, 3.0, 1.8, 0.7, 0.1],
+      (MetricSeriesType.pvPower, ChartGranularity.week) =>
+        [2.2, 3.4, 2.7, 4.0, 3.6, 2.8, 3.3],
+      (MetricSeriesType.pvPower, ChartGranularity.month) =>
+        [2.1,2.8,3.5,2.0,4.0,3.8,3.2,2.9,4.1,3.2,2.5,3.0,3.8,4.0,3.1,3.5,2.2,3.3,4.2,3.7,2.9,3.4,3.9,3.1,3.7,4.1,3.5,3.0,2.8,3.2],
+      (MetricSeriesType.loadPower, ChartGranularity.day) =>
+        [1.4, 1.3, 1.6, 1.9, 1.8, 1.7, 1.6, 1.8, 2.0, 1.7, 1.5, 1.4],
+      (MetricSeriesType.loadPower, ChartGranularity.week) =>
+        [1.6, 1.9, 1.7, 2.1, 1.8, 1.7, 2.0],
+      (MetricSeriesType.loadPower, ChartGranularity.month) =>
+        [1.6,1.8,2.0,1.5,1.9,2.1,1.9,1.7,2.0,1.8,1.6,1.8,2.0,1.9,1.7,1.8,1.5,1.9,2.2,2.0,1.7,1.9,2.1,1.8,1.9,2.1,1.9,1.7,1.6,1.8],
+      (MetricSeriesType.batterySoc, ChartGranularity.day) =>
+        [92.0,88.0,80.0,72.0,68.0,74.0,80.0,84.0,80.0,76.0,72.0,78.0],
+      (MetricSeriesType.batterySoc, ChartGranularity.week) =>
+        [76.0, 82.0, 68.0, 85.0, 79.0, 73.0, 88.0],
+      (MetricSeriesType.batterySoc, ChartGranularity.month) =>
+        [80.0,78.0,82.0,68.0,85.0,84.0,79.0,76.0,88.0,82.0,73.0,77.0,83.0,86.0,79.0,81.0,70.0,78.0,90.0,85.0,76.0,80.0,84.0,78.0,82.0,87.0,80.0,75.0,72.0,78.0],
+      (MetricSeriesType.generation, ChartGranularity.day) =>
+        [0.0, 0.0, 0.6, 1.4, 2.3, 3.1, 3.8, 3.2, 2.1, 1.0, 0.6, 0.3],
+      (MetricSeriesType.generation, ChartGranularity.week) =>
+        [14.2, 18.6, 16.3, 20.1, 17.8, 15.5, 19.2],
+      (MetricSeriesType.generation, ChartGranularity.month) =>
+        [15.1,16.3,18.0,14.2,20.1,19.4,17.8,16.5,21.0,18.6,15.9,17.2,19.8,20.3,16.7,18.1,14.5,17.9,22.0,19.1,16.3,18.7,20.5,17.4,19.2,21.1,18.3,16.8,15.6,17.5],
+      (MetricSeriesType.consumption, ChartGranularity.day) =>
+        [0.9, 1.0, 1.4, 1.7, 2.0, 1.8, 1.6, 1.9, 2.2, 1.7, 1.5, 1.2],
+      (MetricSeriesType.consumption, ChartGranularity.week) =>
+        [12.1, 14.2, 13.6, 15.9, 14.8, 13.2, 16.1],
+      (MetricSeriesType.consumption, ChartGranularity.month) =>
+        [13.2,14.1,15.8,12.6,14.9,16.2,15.1,13.8,16.5,14.2,13.5,14.8,16.1,15.3,13.9,14.6,12.8,15.2,17.1,15.8,13.9,15.4,16.8,14.7,15.9,17.2,15.3,14.1,13.2,14.9],
+    };
+  }
 
   StationOverview _overviewForScenario(DemoScenario scenario) {
     final now = DateTime.now();

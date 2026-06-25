@@ -34,6 +34,27 @@ void main() {
     expect(find.text('Low battery'), findsOneWidget);
   });
 
+  testWidgets('Alerts accent bar is clipped by rounded card corners', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Alerts'));
+    await tester.pumpAndSettle();
+
+    final barFinder = find.byKey(const Key('alertAccentBar')).first;
+    final clipFinder = find.ancestor(
+      of: barFinder,
+      matching: find.byType(ClipRRect),
+    );
+
+    expect(clipFinder, findsAtLeastNWidgets(1));
+    final clip = tester.widget<ClipRRect>(clipFinder.first);
+    expect(clip.clipBehavior, Clip.hardEdge);
+    expect(clip.borderRadius, BorderRadius.circular(16));
+  });
+
   test('ApiConfig uses dart-define override or dev default', () {
     final config = ApiConfig.fromDartDefine();
     const environmentName = String.fromEnvironment('APP_ENV', defaultValue: 'dev');

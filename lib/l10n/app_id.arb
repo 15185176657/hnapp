@@ -1,0 +1,15 @@
+{
+  "granularityDay": "Hari",
+  "granularityWeek": "Minggu",
+  "granularityMonth": "Bulan",
+  "loading": "Memuat...",
+  "noData": "Tidak ada data",
+  "retry": "Coba lagi",
+  "metricPvPower": "Daya PV",
+  "metricLoadPower": "Daya beban",
+  "metricBatterySoc": "SOC baterai",
+  "metricTodayGenerated": "Hasil hari ini",
+  "metricTodayUsed": "Pakai hari ini",
+  "metricTotalGenerated": "Total hasil",
+  "metricTotalUsed": "Total pakai"
+}

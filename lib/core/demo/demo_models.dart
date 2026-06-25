@@ -3,6 +3,15 @@ enum SystemStatus { normal, charging, discharging, lowBattery, fault }
 /// Time granularity used on detail chart pages.
 enum ChartGranularity { day, week, month }
 
+/// Single-metric series identifiers used by metric detail pages.
+enum MetricSeriesType {
+  pvPower,
+  loadPower,
+  batterySoc,
+  generation,
+  consumption,
+}
+
 /// A single (x-index, y-value, label) triple for chart series.
 class ChartPoint {
   const ChartPoint({required this.x, required this.y, required this.label});
@@ -72,6 +81,23 @@ class BatteryChartData {
   final int currentSoc;
   final int minSoc;
   final int maxSoc;
+}
+
+/// Single metric chart payload for detail pages.
+class MetricChartData {
+  const MetricChartData({
+    required this.granularity,
+    required this.points,
+    required this.latest,
+    required this.peak,
+    required this.average,
+  });
+
+  final ChartGranularity granularity;
+  final List<ChartPoint> points;
+  final double latest;
+  final double peak;
+  final double average;
 }
 
 enum AlertSeverity { warning, critical, info }

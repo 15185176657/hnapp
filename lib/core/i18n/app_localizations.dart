@@ -61,6 +61,8 @@ class AppLocalizations {
   // Shared -----------------------------------------------------------------
   String get retry => _t('retry');
   String get refresh => _t('refresh');
+  String get loading => _t('loading');
+  String get noData => _t('noData');
 
   // Dashboard --------------------------------------------------------------
   String get dashboardTitle => _t('dashboardTitle');
@@ -171,6 +173,8 @@ class AppLocalizations {
       'navMine': 'Mine',
       'retry': 'Retry',
       'refresh': 'Refresh',
+      'loading': 'Loading...',
+      'noData': 'No data',
       'dashboardTitle': 'Off-grid solar',
       'dashboardSubtitle':
           'Clear power, battery and alert status for daily decisions.',
@@ -266,6 +270,8 @@ class AppLocalizations {
       'navMine': 'ของฉัน',
       'retry': 'ลองอีกครั้ง',
       'refresh': 'รีเฟรช',
+      'loading': 'กำลังโหลด...',
+      'noData': 'ไม่มีข้อมูล',
       'dashboardTitle': 'โซลาร์นอกระบบ',
       'dashboardSubtitle':
           'ดูสถานะพลังงาน แบตเตอรี่ และการแจ้งเตือนได้ชัดเจนทุกวัน',
@@ -355,6 +361,8 @@ class AppLocalizations {
       'navMine': 'Của tôi',
       'retry': 'Thử lại',
       'refresh': 'Làm mới',
+      'loading': 'Đang tải...',
+      'noData': 'Không có dữ liệu',
       'dashboardTitle': 'Điện mặt trời độc lập',
       'dashboardSubtitle':
           'Trạng thái điện, pin và cảnh báo rõ ràng cho quyết định hằng ngày.',
@@ -450,6 +458,8 @@ class AppLocalizations {
       'navMine': 'Saya',
       'retry': 'Coba lagi',
       'refresh': 'Segarkan',
+      'loading': 'Memuat...',
+      'noData': 'Tidak ada data',
       'dashboardTitle': 'Surya off-grid',
       'dashboardSubtitle':
           'Status daya, baterai, dan peringatan yang jelas untuk keputusan harian.',
@@ -546,6 +556,8 @@ class AppLocalizations {
       'navMine': '我的',
       'retry': '重试',
       'refresh': '刷新',
+      'loading': '加载中...',
+      'noData': '暂无数据',
       'dashboardTitle': '离网光伏',
       'dashboardSubtitle': '清晰呈现发电、电池与告警状态，辅助日常决策。',
       'demoScenario': '演示场景',

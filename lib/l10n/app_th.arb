@@ -1,0 +1,15 @@
+{
+  "granularityDay": "วัน",
+  "granularityWeek": "สัปดาห์",
+  "granularityMonth": "เดือน",
+  "loading": "กำลังโหลด...",
+  "noData": "ไม่มีข้อมูล",
+  "retry": "ลองอีกครั้ง",
+  "metricPvPower": "กำลังผลิต PV",
+  "metricLoadPower": "กำลังโหลด",
+  "metricBatterySoc": "SOC แบตเตอรี่",
+  "metricTodayGenerated": "ผลิตวันนี้",
+  "metricTodayUsed": "ใช้วันนี้",
+  "metricTotalGenerated": "ผลิตรวม",
+  "metricTotalUsed": "ใช้รวม"
+}
