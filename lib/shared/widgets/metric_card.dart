@@ -11,6 +11,7 @@ class MetricCard extends StatelessWidget {
     required this.icon,
     required this.color,
     this.caption,
+    this.onTap,
   });
 
   final String label;
@@ -19,10 +20,11 @@ class MetricCard extends StatelessWidget {
   final IconData icon;
   final Color color;
   final String? caption;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return SectionCard(
+    final card = SectionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -49,6 +51,12 @@ class MetricCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
+              if (onTap != null)
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
             ],
           ),
           const SizedBox(height: 14),
@@ -79,6 +87,13 @@ class MetricCard extends StatelessWidget {
           ],
         ],
       ),
+    );
+
+    if (onTap == null) return card;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: card,
     );
   }
 }

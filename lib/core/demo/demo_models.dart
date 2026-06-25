@@ -1,5 +1,79 @@
 enum SystemStatus { normal, charging, discharging, lowBattery, fault }
 
+/// Time granularity used on detail chart pages.
+enum ChartGranularity { day, week, month }
+
+/// A single (x-index, y-value, label) triple for chart series.
+class ChartPoint {
+  const ChartPoint({required this.x, required this.y, required this.label});
+
+  /// Horizontal position (0-based index aligned with [label]).
+  final double x;
+  final double y;
+
+  /// Short axis label, e.g. "08", "Mon", "01".
+  final String label;
+}
+
+/// Energy (generation + consumption) chart payload for a given granularity.
+class EnergyChartData {
+  const EnergyChartData({
+    required this.granularity,
+    required this.generationPoints,
+    required this.consumptionPoints,
+    required this.totalGenerationKwh,
+    required this.totalConsumptionKwh,
+    required this.peakGenerationKwh,
+    required this.peakConsumptionKwh,
+  });
+
+  final ChartGranularity granularity;
+  final List<ChartPoint> generationPoints;
+  final List<ChartPoint> consumptionPoints;
+  final double totalGenerationKwh;
+  final double totalConsumptionKwh;
+  final double peakGenerationKwh;
+  final double peakConsumptionKwh;
+}
+
+/// Power flow (PV + load) chart payload for a given granularity.
+class PowerChartData {
+  const PowerChartData({
+    required this.granularity,
+    required this.pvPowerPoints,
+    required this.loadPowerPoints,
+    required this.peakPvKw,
+    required this.peakLoadKw,
+    required this.avgPvKw,
+    required this.avgLoadKw,
+  });
+
+  final ChartGranularity granularity;
+  final List<ChartPoint> pvPowerPoints;
+  final List<ChartPoint> loadPowerPoints;
+  final double peakPvKw;
+  final double peakLoadKw;
+  final double avgPvKw;
+  final double avgLoadKw;
+}
+
+/// Battery SOC chart payload for a given granularity.
+class BatteryChartData {
+  const BatteryChartData({
+    required this.granularity,
+    required this.socPoints,
+    required this.currentSoc,
+    required this.minSoc,
+    required this.maxSoc,
+  });
+
+  final ChartGranularity granularity;
+  final List<ChartPoint> socPoints;
+  final int currentSoc;
+  final int minSoc;
+  final int maxSoc;
+}
+
 enum AlertSeverity { warning, critical, info }
 
 class StationOverview {

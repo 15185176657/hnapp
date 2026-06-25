@@ -9,6 +9,7 @@ import '../../shared/widgets/metric_card.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/simple_bar_chart.dart';
 import '../../shared/widgets/state_message.dart';
+import '../detail/energy_detail_page.dart';
 
 class DataPage extends StatefulWidget {
   const DataPage({super.key});
@@ -107,6 +108,11 @@ class _DataPageState extends State<DataPage> {
                       icon: Icons.wb_sunny_rounded,
                       color: AppColors.solar,
                       caption: l10n.monthCaption(statistics.monthGenerationKwh.toStringAsFixed(0)),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const EnergyDetailPage(),
+                        ),
+                      ),
                     ),
                     MetricCard(
                       label: l10n.metricTodayUsed,
@@ -115,6 +121,11 @@ class _DataPageState extends State<DataPage> {
                       icon: Icons.power_rounded,
                       color: AppColors.ocean,
                       caption: l10n.monthCaption(statistics.monthConsumptionKwh.toStringAsFixed(0)),
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const EnergyDetailPage(),
+                        ),
+                      ),
                     ),
                     MetricCard(
                       label: l10n.metricTotalGenerated,
@@ -122,6 +133,11 @@ class _DataPageState extends State<DataPage> {
                       unit: 'kWh',
                       icon: Icons.auto_graph_rounded,
                       color: AppColors.battery,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const EnergyDetailPage(),
+                        ),
+                      ),
                     ),
                     MetricCard(
                       label: l10n.metricTotalUsed,
@@ -129,28 +145,57 @@ class _DataPageState extends State<DataPage> {
                       unit: 'kWh',
                       icon: Icons.insights_rounded,
                       color: AppColors.warning,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const EnergyDetailPage(),
+                        ),
+                      ),
                     ),
                   ],
                 );
               },
             ),
             const SizedBox(height: 12),
-            SectionCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.todayTrend, style: Theme.of(context).textTheme.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(l10n.todayTrendSubtitle, style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 16),
-                  SimpleBarChart(
-                    primaryValues: statistics.hourlyGeneration,
-                    secondaryValues: statistics.hourlyConsumption,
-                    labels: _hourLabels(statistics.hourlyGeneration.length),
-                  ),
-                  const SizedBox(height: 12),
-                  const _Legend(),
-                ],
+            InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const EnergyDetailPage(),
+                ),
+              ),
+              borderRadius: BorderRadius.circular(16),
+              child: SectionCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(l10n.todayTrend, style: Theme.of(context).textTheme.titleMedium),
+                              const SizedBox(height: 4),
+                              Text(l10n.todayTrendSubtitle, style: Theme.of(context).textTheme.bodyMedium),
+                            ],
+                          ),
+                        ),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SimpleBarChart(
+                      primaryValues: statistics.hourlyGeneration,
+                      secondaryValues: statistics.hourlyConsumption,
+                      labels: _hourLabels(statistics.hourlyGeneration.length),
+                    ),
+                    const SizedBox(height: 12),
+                    const _Legend(),
+                  ],
+                ),
               ),
             ),
           ],

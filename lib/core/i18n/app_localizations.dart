@@ -150,6 +150,19 @@ class AppLocalizations {
   String get privacySubtitle => _t('privacySubtitle');
   String get privacyPlaceholder => _t('privacyPlaceholder');
 
+  // Detail pages -----------------------------------------------------------
+  String get granularityDay => _t('granularityDay');
+  String get granularityWeek => _t('granularityWeek');
+  String get granularityMonth => _t('granularityMonth');
+  String get detailEnergyTitle => _t('detailEnergyTitle');
+  String get detailPowerTitle => _t('detailPowerTitle');
+  String get detailBatteryTitle => _t('detailBatteryTitle');
+  String get detailPeak => _t('detailPeak');
+  String get detailAvg => _t('detailAvg');
+  String get detailBatteryRange => _t('detailBatteryRange');
+  String get detailBatteryLowThreshold => _t('detailBatteryLowThreshold');
+  String get errorLoadingData => _t('errorLoadingData');
+
   static const Map<String, Map<String, String>> _values = {
     'en': {
       'navHome': 'Home',
@@ -234,6 +247,17 @@ class AppLocalizations {
       'privacyTitle': 'Privacy and user agreement',
       'privacySubtitle': 'Reserved page for launch preparation',
       'privacyPlaceholder': 'Agreement page placeholder.',
+      'granularityDay': 'Day',
+      'granularityWeek': 'Week',
+      'granularityMonth': 'Month',
+      'detailEnergyTitle': 'Energy detail',
+      'detailPowerTitle': 'Power flow detail',
+      'detailBatteryTitle': 'Battery detail',
+      'detailPeak': 'Peak',
+      'detailAvg': 'Avg',
+      'detailBatteryRange': 'SOC range',
+      'detailBatteryLowThreshold': 'Low battery threshold (20%)',
+      'errorLoadingData': 'Failed to load data.',
     },
     'th': {
       'navHome': 'หน้าหลัก',
@@ -312,6 +336,17 @@ class AppLocalizations {
       'privacyTitle': 'ความเป็นส่วนตัวและข้อตกลงผู้ใช้',
       'privacySubtitle': 'หน้าที่สงวนไว้สำหรับเตรียมเปิดตัว',
       'privacyPlaceholder': 'หน้าข้อตกลง (ตัวอย่าง)',
+      'granularityDay': 'วัน',
+      'granularityWeek': 'สัปดาห์',
+      'granularityMonth': 'เดือน',
+      'detailEnergyTitle': 'รายละเอียดพลังงาน',
+      'detailPowerTitle': 'รายละเอียดกำลังไฟ',
+      'detailBatteryTitle': 'รายละเอียดแบตเตอรี่',
+      'detailPeak': 'สูงสุด',
+      'detailAvg': 'เฉลี่ย',
+      'detailBatteryRange': 'ช่วง SOC',
+      'detailBatteryLowThreshold': 'เกณฑ์แบตต่ำ (20%)',
+      'errorLoadingData': 'โหลดข้อมูลล้มเหลว',
     },
     'vi': {
       'navHome': 'Trang chủ',
@@ -396,6 +431,17 @@ class AppLocalizations {
       'privacyTitle': 'Quyền riêng tư và thỏa thuận người dùng',
       'privacySubtitle': 'Trang dành riêng cho chuẩn bị ra mắt',
       'privacyPlaceholder': 'Trang thỏa thuận (mẫu).',
+      'granularityDay': 'Ngày',
+      'granularityWeek': 'Tuần',
+      'granularityMonth': 'Tháng',
+      'detailEnergyTitle': 'Chi tiết năng lượng',
+      'detailPowerTitle': 'Chi tiết công suất',
+      'detailBatteryTitle': 'Chi tiết pin',
+      'detailPeak': 'Đỉnh',
+      'detailAvg': 'TB',
+      'detailBatteryRange': 'Phạm vi SOC',
+      'detailBatteryLowThreshold': 'Ngưỡng pin yếu (20%)',
+      'errorLoadingData': 'Không tải được dữ liệu.',
     },
     'id': {
       'navHome': 'Beranda',
@@ -481,6 +527,17 @@ class AppLocalizations {
       'privacyTitle': 'Privasi dan perjanjian pengguna',
       'privacySubtitle': 'Halaman cadangan untuk persiapan peluncuran',
       'privacyPlaceholder': 'Placeholder halaman perjanjian.',
+      'granularityDay': 'Hari',
+      'granularityWeek': 'Minggu',
+      'granularityMonth': 'Bulan',
+      'detailEnergyTitle': 'Detail energi',
+      'detailPowerTitle': 'Detail daya',
+      'detailBatteryTitle': 'Detail baterai',
+      'detailPeak': 'Puncak',
+      'detailAvg': 'Rata-rata',
+      'detailBatteryRange': 'Rentang SOC',
+      'detailBatteryLowThreshold': 'Batas baterai lemah (20%)',
+      'errorLoadingData': 'Gagal memuat data.',
     },
     'zh': {
       'navHome': '首页',
@@ -558,6 +615,17 @@ class AppLocalizations {
       'privacyTitle': '隐私与用户协议',
       'privacySubtitle': '为上线准备预留的页面',
       'privacyPlaceholder': '协议页占位。',
+      'granularityDay': '日',
+      'granularityWeek': '周',
+      'granularityMonth': '月',
+      'detailEnergyTitle': '能源详情',
+      'detailPowerTitle': '功率详情',
+      'detailBatteryTitle': '电池详情',
+      'detailPeak': '峰值',
+      'detailAvg': '均值',
+      'detailBatteryRange': 'SOC 范围',
+      'detailBatteryLowThreshold': '低电量阈值（20%）',
+      'errorLoadingData': '数据加载失败。',
     },
   };
 }
