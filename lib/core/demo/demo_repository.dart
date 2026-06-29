@@ -49,26 +49,20 @@ class DemoRepository {
     final now = DateTime.now();
     return [
       SolarAlert(
-        title: 'Low battery',
-        message: 'Battery is below 25%. Reduce high-power appliances.',
-        action: 'Turn off heavy loads and check charging.',
+        kind: AlertKind.lowBattery,
         severity: AlertSeverity.warning,
         occurredAt: now.subtract(const Duration(minutes: 18)),
         isResolved: false,
       ),
       SolarAlert(
-        title: 'Overload detected',
-        message: 'Load is close to inverter limit.',
-        action: 'Move washing machine or pump to daytime use.',
+        kind: AlertKind.overload,
         severity: AlertSeverity.critical,
         occurredAt: now.subtract(const Duration(hours: 2)),
         isResolved: history,
       ),
       if (history)
         SolarAlert(
-          title: 'Controller temperature high',
-          message: 'Device cooled down after ventilation improved.',
-          action: 'Keep the controller area clear.',
+          kind: AlertKind.controllerTemperature,
           severity: AlertSeverity.info,
           occurredAt: now.subtract(const Duration(days: 1, hours: 4)),
           isResolved: true,

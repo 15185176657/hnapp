@@ -192,9 +192,9 @@ class _StatusSummary extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(overview.systemName, style: Theme.of(context).textTheme.titleLarge),
+                    Text(l10n.stationName, style: Theme.of(context).textTheme.titleLarge),
                     const SizedBox(height: 4),
-                    Text(overview.location, style: Theme.of(context).textTheme.bodyMedium),
+                    Text(l10n.stationLocation, style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
               ),

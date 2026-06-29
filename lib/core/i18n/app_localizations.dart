@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 
+import '../demo/demo_models.dart';
+
 /// Hand-written localization table for the off-grid solar app.
 ///
 /// All static UI copy lives in [_values]. Each supported language has its own
@@ -129,6 +131,26 @@ class AppLocalizations {
       _t('hoursAgo').replaceAll('{count}', count.toString());
   String minutesAgo(int count) =>
       _t('minutesAgo').replaceAll('{count}', count.toString());
+
+  // Localized title/message/action for each demo alert kind so alert cards
+  // stay translated when the language changes.
+  String alertTitle(AlertKind kind) => _t('alert${_kind(kind)}Title');
+  String alertMessage(AlertKind kind) => _t('alert${_kind(kind)}Message');
+  String alertAction(AlertKind kind) => _t('alert${_kind(kind)}Action');
+
+  String _kind(AlertKind kind) => switch (kind) {
+        AlertKind.lowBattery => 'LowBattery',
+        AlertKind.overload => 'Overload',
+        AlertKind.controllerTemperature => 'ControllerTemp',
+      };
+
+  // Localized station identity shown on the dashboard.
+  String get stationName => _t('stationName');
+  String get stationLocation => _t('stationLocation');
+
+  // Short weekday labels used on the week-granularity charts. Falls back to the
+  // original label (e.g. hour or day-of-month numbers) when not a weekday.
+  String chartLabel(String raw) => _t('weekday$raw') == 'weekday$raw' ? raw : _t('weekday$raw');
 
   // Profile page -----------------------------------------------------------
   String get profileTitle => _t('profileTitle');
@@ -262,6 +284,19 @@ class AppLocalizations {
       'detailBatteryRange': 'SOC range',
       'detailBatteryLowThreshold': 'Low battery threshold (20%)',
       'errorLoadingData': 'Failed to load data.',
+      'stationName': 'Home Solar Station',
+      'stationLocation': 'Chiang Mai, Thailand',
+      'weekdayMon': 'Mon', 'weekdayTue': 'Tue', 'weekdayWed': 'Wed', 'weekdayThu': 'Thu',
+      'weekdayFri': 'Fri', 'weekdaySat': 'Sat', 'weekdaySun': 'Sun',
+      'alertLowBatteryTitle': 'Low battery',
+      'alertLowBatteryMessage': 'Battery is below 25%. Reduce high-power appliances.',
+      'alertLowBatteryAction': 'Turn off heavy loads and check charging.',
+      'alertOverloadTitle': 'Overload detected',
+      'alertOverloadMessage': 'Load is close to inverter limit.',
+      'alertOverloadAction': 'Move washing machine or pump to daytime use.',
+      'alertControllerTempTitle': 'Controller temperature high',
+      'alertControllerTempMessage': 'Device cooled down after ventilation improved.',
+      'alertControllerTempAction': 'Keep the controller area clear.',
     },
     'th': {
       'navHome': 'หน้าหลัก',
@@ -351,6 +386,19 @@ class AppLocalizations {
       'detailBatteryRange': 'ช่วง SOC',
       'detailBatteryLowThreshold': 'เกณฑ์แบตต่ำ (20%)',
       'errorLoadingData': 'โหลดข้อมูลล้มเหลว',
+      'stationName': 'สถานีโซลาร์ในบ้าน',
+      'stationLocation': 'เชียงใหม่ ประเทศไทย',
+      'weekdayMon': 'จ.', 'weekdayTue': 'อ.', 'weekdayWed': 'พ.', 'weekdayThu': 'พฤ.',
+      'weekdayFri': 'ศ.', 'weekdaySat': 'ส.', 'weekdaySun': 'อา.',
+      'alertLowBatteryTitle': 'แบตเตอรี่ต่ำ',
+      'alertLowBatteryMessage': 'แบตเตอรี่ต่ำกว่า 25% ลดการใช้เครื่องใช้ไฟฟ้ากำลังสูง',
+      'alertLowBatteryAction': 'ปิดโหลดหนักและตรวจสอบการชาร์จ',
+      'alertOverloadTitle': 'ตรวจพบโหลดเกิน',
+      'alertOverloadMessage': 'โหลดใกล้ถึงขีดจำกัดของอินเวอร์เตอร์',
+      'alertOverloadAction': 'ย้ายเครื่องซักผ้าหรือปั๊มไปใช้ช่วงกลางวัน',
+      'alertControllerTempTitle': 'อุณหภูมิคอนโทรลเลอร์สูง',
+      'alertControllerTempMessage': 'อุปกรณ์เย็นลงหลังการระบายอากาศดีขึ้น',
+      'alertControllerTempAction': 'รักษาพื้นที่รอบคอนโทรลเลอร์ให้โล่ง',
     },
     'vi': {
       'navHome': 'Trang chủ',
@@ -446,6 +494,19 @@ class AppLocalizations {
       'detailBatteryRange': 'Phạm vi SOC',
       'detailBatteryLowThreshold': 'Ngưỡng pin yếu (20%)',
       'errorLoadingData': 'Không tải được dữ liệu.',
+      'stationName': 'Trạm điện mặt trời gia đình',
+      'stationLocation': 'Chiang Mai, Thái Lan',
+      'weekdayMon': 'T2', 'weekdayTue': 'T3', 'weekdayWed': 'T4', 'weekdayThu': 'T5',
+      'weekdayFri': 'T6', 'weekdaySat': 'T7', 'weekdaySun': 'CN',
+      'alertLowBatteryTitle': 'Pin yếu',
+      'alertLowBatteryMessage': 'Pin dưới 25%. Giảm thiết bị công suất cao.',
+      'alertLowBatteryAction': 'Tắt tải nặng và kiểm tra sạc.',
+      'alertOverloadTitle': 'Phát hiện quá tải',
+      'alertOverloadMessage': 'Tải gần đạt giới hạn của inverter.',
+      'alertOverloadAction': 'Chuyển máy giặt hoặc bơm sang dùng ban ngày.',
+      'alertControllerTempTitle': 'Nhiệt độ bộ điều khiển cao',
+      'alertControllerTempMessage': 'Thiết bị đã hạ nhiệt sau khi thông gió tốt hơn.',
+      'alertControllerTempAction': 'Giữ khu vực bộ điều khiển thông thoáng.',
     },
     'id': {
       'navHome': 'Beranda',
@@ -542,6 +603,19 @@ class AppLocalizations {
       'detailBatteryRange': 'Rentang SOC',
       'detailBatteryLowThreshold': 'Batas baterai lemah (20%)',
       'errorLoadingData': 'Gagal memuat data.',
+      'stationName': 'Stasiun Surya Rumah',
+      'stationLocation': 'Chiang Mai, Thailand',
+      'weekdayMon': 'Sen', 'weekdayTue': 'Sel', 'weekdayWed': 'Rab', 'weekdayThu': 'Kam',
+      'weekdayFri': 'Jum', 'weekdaySat': 'Sab', 'weekdaySun': 'Min',
+      'alertLowBatteryTitle': 'Baterai lemah',
+      'alertLowBatteryMessage': 'Baterai di bawah 25%. Kurangi alat berdaya tinggi.',
+      'alertLowBatteryAction': 'Matikan beban berat dan periksa pengisian.',
+      'alertOverloadTitle': 'Beban berlebih terdeteksi',
+      'alertOverloadMessage': 'Beban mendekati batas inverter.',
+      'alertOverloadAction': 'Pindahkan mesin cuci atau pompa ke siang hari.',
+      'alertControllerTempTitle': 'Suhu kontroler tinggi',
+      'alertControllerTempMessage': 'Perangkat mendingin setelah ventilasi membaik.',
+      'alertControllerTempAction': 'Jaga area kontroler tetap lapang.',
     },
     'zh': {
       'navHome': '首页',
@@ -630,6 +704,19 @@ class AppLocalizations {
       'detailBatteryRange': 'SOC 范围',
       'detailBatteryLowThreshold': '低电量阈值（20%）',
       'errorLoadingData': '数据加载失败。',
+      'stationName': '家庭太阳能电站',
+      'stationLocation': '泰国清迈',
+      'weekdayMon': '周一', 'weekdayTue': '周二', 'weekdayWed': '周三', 'weekdayThu': '周四',
+      'weekdayFri': '周五', 'weekdaySat': '周六', 'weekdaySun': '周日',
+      'alertLowBatteryTitle': '电量偏低',
+      'alertLowBatteryMessage': '电池电量低于25%，请减少大功率电器使用。',
+      'alertLowBatteryAction': '关闭大负载并检查充电情况。',
+      'alertOverloadTitle': '检测到过载',
+      'alertOverloadMessage': '负载接近逆变器上限。',
+      'alertOverloadAction': '将洗衣机或水泵改到白天使用。',
+      'alertControllerTempTitle': '控制器温度过高',
+      'alertControllerTempMessage': '通风改善后设备已降温。',
+      'alertControllerTempAction': '保持控制器周围空旷。',
     },
     'ja': {
       'navHome': 'ホーム',
@@ -720,6 +807,19 @@ class AppLocalizations {
       'detailBatteryRange': 'SOC範囲',
       'detailBatteryLowThreshold': '低バッテリーしきい値（20%）',
       'errorLoadingData': 'データの読み込みに失敗しました。',
+      'stationName': '家庭用ソーラー発電所',
+      'stationLocation': 'タイ・チェンマイ',
+      'weekdayMon': '月', 'weekdayTue': '火', 'weekdayWed': '水', 'weekdayThu': '木',
+      'weekdayFri': '金', 'weekdaySat': '土', 'weekdaySun': '日',
+      'alertLowBatteryTitle': 'バッテリー残量低下',
+      'alertLowBatteryMessage': 'バッテリーが25%未満です。高消費電力機器を控えてください。',
+      'alertLowBatteryAction': '大きな負荷を切り、充電状況を確認してください。',
+      'alertOverloadTitle': '過負荷を検知',
+      'alertOverloadMessage': '負荷がインバーターの上限に近づいています。',
+      'alertOverloadAction': '洗濯機やポンプは日中に使用してください。',
+      'alertControllerTempTitle': 'コントローラー温度上昇',
+      'alertControllerTempMessage': '換気改善後に装置が冷却されました。',
+      'alertControllerTempAction': 'コントローラー周辺を片付けてください。',
     },
     'ko': {
       'navHome': '홈',
@@ -812,6 +912,19 @@ class AppLocalizations {
       'detailBatteryRange': 'SOC 범위',
       'detailBatteryLowThreshold': '배터리 부족 임계값 (20%)',
       'errorLoadingData': '데이터를 불러오지 못했습니다.',
+      'stationName': '가정용 태양광 발전소',
+      'stationLocation': '치앙마이, 태국',
+      'weekdayMon': '월', 'weekdayTue': '화', 'weekdayWed': '수', 'weekdayThu': '목',
+      'weekdayFri': '금', 'weekdaySat': '토', 'weekdaySun': '일',
+      'alertLowBatteryTitle': '배터리 부족',
+      'alertLowBatteryMessage': '배터리가 25% 미만입니다. 고출력 기기 사용을 줄이세요.',
+      'alertLowBatteryAction': '대용량 부하를 끄고 충전 상태를 확인하세요.',
+      'alertOverloadTitle': '과부하 감지',
+      'alertOverloadMessage': '부하가 인버터 한계에 근접했습니다.',
+      'alertOverloadAction': '세탁기나 펌프를 낮 시간에 사용하세요.',
+      'alertControllerTempTitle': '컨트롤러 온도 높음',
+      'alertControllerTempMessage': '환기가 개선되어 장치가 냉각되었습니다.',
+      'alertControllerTempAction': '컨트롤러 주변을 깨끗하게 유지하세요.',
     },
   };
 }
