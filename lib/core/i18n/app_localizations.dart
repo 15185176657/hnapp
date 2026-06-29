@@ -665,7 +665,7 @@ class AppLocalizations {
       'dashboardTitle': 'オフグリッド太陽光',
       'dashboardSubtitle': '電力・バッテリー・アラートの状態を日々の判断に役立てましょう。',
       'demoScenario': 'デモシナリオ',
-      'weakNetworkTitle': 'ネットワーク弱い',
+      'weakNetworkTitle': 'ネットワークが弱い',
       'weakNetworkMessage': '最後に成功したデータを表示しています。下に引いて再試行してください。',
       'remainingHours': '現在の負荷で約 {hours} 時間給電できます。',
       'deviceOfflineHint': 'デバイスがオフラインです。ゲートウェイの電源と信号を確認してください。',
