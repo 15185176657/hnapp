@@ -62,7 +62,7 @@ class _EnergyDetailPageState extends State<EnergyDetailPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.metricTodayGenerated)),
+      appBar: AppBar(title: Text(l10n.legendGeneration)),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(

@@ -14,7 +14,7 @@ enum PowerMetric { pv, load }
 /// Detail page showing a single power metric (PV power OR load power) as a line
 /// chart with Day / Week / Month granularity tabs.
 class PowerDetailPage extends StatefulWidget {
-  const PowerDetailPage({super.key, this.metric = PowerMetric.pv});
+  const PowerDetailPage({super.key, required this.metric});
 
   final PowerMetric metric;
 
