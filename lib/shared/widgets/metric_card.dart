@@ -59,7 +59,7 @@ class MetricCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 10),
           FittedBox(
             alignment: Alignment.centerLeft,
             fit: BoxFit.scaleDown,
@@ -76,7 +76,10 @@ class MetricCard extends StatelessWidget {
                 const SizedBox(width: 4),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 4),
-                  child: Text(unit, style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text(
+                    unit,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
               ],
             ),

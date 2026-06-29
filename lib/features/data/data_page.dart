@@ -99,7 +99,7 @@ class _DataPageState extends State<DataPage> {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                   physics: const NeverScrollableScrollPhysics(),
-                  childAspectRatio: isNarrow ? 2.25 : 1.12,
+                  childAspectRatio: isNarrow ? 2.0 : 1.12,
                   children: [
                     MetricCard(
                       label: l10n.metricTodayGenerated,
@@ -110,7 +110,7 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthGenerationKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                         ),
                       ),
                     ),
@@ -123,7 +123,7 @@ class _DataPageState extends State<DataPage> {
                       caption: l10n.monthCaption(statistics.monthConsumptionKwh.toStringAsFixed(0)),
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.consumption),
                         ),
                       ),
                     ),
@@ -135,7 +135,7 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.battery,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                         ),
                       ),
                     ),
@@ -147,7 +147,7 @@ class _DataPageState extends State<DataPage> {
                       color: AppColors.warning,
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
-                          builder: (_) => const EnergyDetailPage(),
+                          builder: (_) => const EnergyDetailPage(metric: EnergyMetric.consumption),
                         ),
                       ),
                     ),
@@ -159,7 +159,7 @@ class _DataPageState extends State<DataPage> {
             InkWell(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (_) => const EnergyDetailPage(),
+                  builder: (_) => const EnergyDetailPage(metric: EnergyMetric.generation),
                 ),
               ),
               borderRadius: BorderRadius.circular(16),
@@ -205,9 +205,8 @@ class _DataPageState extends State<DataPage> {
   }
 }
 
-/// Builds evenly spaced hour-of-day markers for the daily trend chart so each
-/// bar group can be tied back to a time. The demo dataset spans roughly the
-/// daylight window, sampled every two hours.
+/// 为每日趋势图生成等间隔小时标记，让每组柱子都能对应到具体时间。
+/// 演示数据大致覆盖白天时段，每两小时采样一次。
 List<String> _hourLabels(int count) {
   return List<String>.generate(count, (index) {
     final hour = (6 + index * 2) % 24;

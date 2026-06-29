@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
 import '../../core/demo/demo_models.dart';
-import '../../core/demo/demo_repository.dart';
 import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/section_card.dart';
 
-/// Detail page showing battery SOC as a line chart with Day/Week/Month tabs.
+/// 电池 SOC 详情页，以日/周/月粒度展示折线图。
 class BatteryDetailPage extends StatefulWidget {
   const BatteryDetailPage({super.key});
 
@@ -106,7 +105,7 @@ class _BatteryDetailPageState extends State<BatteryDetailPage> {
   }
 }
 
-// ── Summary ──────────────────────────────────────────────────────────────────
+// ── 概览 ─────────────────────────────────────────────────────────────────────
 
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow({required this.data});
@@ -187,7 +186,7 @@ class _StatTile extends StatelessWidget {
   }
 }
 
-// ── Line chart ───────────────────────────────────────────────────────────────
+// ── 折线图 ───────────────────────────────────────────────────────────────────
 
 class _BatterySocChart extends StatelessWidget {
   const _BatterySocChart({required this.data});
@@ -201,7 +200,7 @@ class _BatterySocChart extends StatelessWidget {
 
     FlSpot toSpot(ChartPoint p) => FlSpot(p.x, p.y);
 
-    // Draw a red reference line at 20 % to visualise the low-battery threshold.
+    // 在 20% 位置绘制红色参考线，用于提示低电量阈值。
     const lowThreshold = 20.0;
 
     return SectionCard(
@@ -321,7 +320,7 @@ class _BatterySocChart extends StatelessWidget {
           const SizedBox(height: 8),
           Row(
             children: [
-              // Dashed line indicator matching the chart threshold style.
+              // 与图表阈值线风格一致的虚线图例。
               ...List.generate(3, (_) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -352,7 +351,7 @@ class _BatterySocChart extends StatelessWidget {
   }
 }
 
-// ── Granularity toggle ───────────────────────────────────────────────────────
+// ── 时间粒度切换 ─────────────────────────────────────────────────────────────
 
 class _GranularityToggle extends StatelessWidget {
   const _GranularityToggle({required this.current, required this.onChanged});

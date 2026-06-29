@@ -1,10 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-/// Hand-written localization table for the off-grid solar app.
+/// 离网光伏 App 的手写本地化表。
 ///
-/// All static UI copy lives in [_values]. Each supported language has its own
-/// map; any key missing from a language gracefully falls back to English so a
-/// partially translated language never shows a blank string.
+/// 所有静态界面文案都放在 [_values] 中。每种支持语言都有独立 map；
+/// 如果某个语言缺少 key，会自动回退到英文，避免部分翻译时出现空白文案。
 class AppLocalizations {
   const AppLocalizations(this.locale);
 
@@ -13,7 +12,7 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
 
-  /// Languages the app ships with. English is the guaranteed fallback.
+    /// 应用当前内置的语言列表，英文是兜底语言。
   static const List<Locale> supportedLocales = [
     Locale('en'),
     Locale('th'),
@@ -34,8 +33,7 @@ class AppLocalizations {
         .any((supported) => supported.languageCode == locale.languageCode);
   }
 
-  /// Native display name for a language code, used in the language picker so
-  /// every option is readable regardless of the active language.
+    /// 语言代码对应的本地名称，用于语言选择器，保证无论当前语言是什么都能读懂选项。
   static String nativeName(String languageCode) {
     return switch (languageCode) {
       'en' => 'English',
@@ -52,17 +50,17 @@ class AppLocalizations {
     return table[key] ?? _values['en']![key] ?? key;
   }
 
-  // Navigation -------------------------------------------------------------
+    // 导航 -------------------------------------------------------------------
   String get navHome => _t('navHome');
   String get navData => _t('navData');
   String get navAlerts => _t('navAlerts');
   String get navMine => _t('navMine');
 
-  // Shared -----------------------------------------------------------------
+    // 通用 -------------------------------------------------------------------
   String get retry => _t('retry');
   String get refresh => _t('refresh');
 
-  // Dashboard --------------------------------------------------------------
+    // 首页 -------------------------------------------------------------------
   String get dashboardTitle => _t('dashboardTitle');
   String get dashboardSubtitle => _t('dashboardSubtitle');
   String get demoScenario => _t('demoScenario');
@@ -83,7 +81,7 @@ class AppLocalizations {
   String lastUpdated(String time) =>
       _t('lastUpdated').replaceAll('{time}', time);
 
-  // Status labels ----------------------------------------------------------
+    // 状态标签 ---------------------------------------------------------------
   String get statusNormal => _t('statusNormal');
   String get statusCharging => _t('statusCharging');
   String get statusDischarging => _t('statusDischarging');
@@ -91,7 +89,7 @@ class AppLocalizations {
   String get statusActionNeeded => _t('statusActionNeeded');
   String get statusOffline => _t('statusOffline');
 
-  // Data page --------------------------------------------------------------
+    // 数据页 -----------------------------------------------------------------
   String get dataTitle => _t('dataTitle');
   String get dataSubtitle => _t('dataSubtitle');
   String get savedDataTitle => _t('savedDataTitle');
@@ -106,7 +104,7 @@ class AppLocalizations {
   String get legendGeneration => _t('legendGeneration');
   String get legendConsumption => _t('legendConsumption');
 
-  // Alerts page ------------------------------------------------------------
+    // 告警页 -----------------------------------------------------------------
   String get alertsTitle => _t('alertsTitle');
   String get alertsSubtitle => _t('alertsSubtitle');
   String get segmentCurrent => _t('segmentCurrent');
@@ -126,7 +124,7 @@ class AppLocalizations {
   String minutesAgo(int count) =>
       _t('minutesAgo').replaceAll('{count}', count.toString());
 
-  // Profile page -----------------------------------------------------------
+    // 我的页 -----------------------------------------------------------------
   String get profileTitle => _t('profileTitle');
   String get profileSubtitle => _t('profileSubtitle');
   String get accountSignedIn => _t('accountSignedIn');
@@ -150,7 +148,7 @@ class AppLocalizations {
   String get privacySubtitle => _t('privacySubtitle');
   String get privacyPlaceholder => _t('privacyPlaceholder');
 
-  // Detail pages -----------------------------------------------------------
+    // 详情页 -----------------------------------------------------------------
   String get granularityDay => _t('granularityDay');
   String get granularityWeek => _t('granularityWeek');
   String get granularityMonth => _t('granularityMonth');

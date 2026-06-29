@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    // Flutter Gradle 插件必须在 Android 与 Kotlin 插件之后应用。
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -15,10 +15,9 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // 待办：打包发布前请替换为唯一的正式 applicationId。
         applicationId = "com.example.hnapp"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // 可按应用需求调整下列 SDK 与版本配置。
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -27,8 +26,8 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // 待办：正式发布前请配置 release 签名。
+            // 当前暂用 debug 签名，便于演示版 release 运行。
             signingConfig = signingConfigs.getByName("debug")
         }
     }

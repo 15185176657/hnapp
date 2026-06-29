@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../app_scope.dart';
@@ -70,19 +69,13 @@ class _DashboardPageState extends State<DashboardPage> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          _Header(
-            selectedScenario: AppScope.of(context).demoRepository.scenario,
-            onScenarioChanged: (scenario) {
-              AppScope.of(context).demoRepository.setScenario(scenario);
-              _loadOverview();
-            },
-          ),
-          const SizedBox(height: 16),
           if (_isLoading && overview == null)
-            const Center(child: Padding(
-              padding: EdgeInsets.all(32),
-              child: CircularProgressIndicator(),
-            ))
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(32),
+                child: CircularProgressIndicator(),
+              ),
+            )
           else if (overview != null) ...[
             if (_showWeakNetwork) ...[
               StateMessage(
@@ -127,52 +120,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 }
 
-class _Header extends StatelessWidget {
-  const _Header({required this.selectedScenario, required this.onScenarioChanged});
-
-  final DemoScenario selectedScenario;
-  final ValueChanged<DemoScenario> onScenarioChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(l10n.dashboardTitle, style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 6),
-        Text(
-          l10n.dashboardSubtitle,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        // The demo scenario switcher is a development-only aid and must not be
-        // visible in release builds.
-        if (kDebugMode) ...[
-          const SizedBox(height: 12),
-          DropdownButtonFormField<DemoScenario>(
-            initialValue: selectedScenario,
-            decoration: InputDecoration(
-              labelText: l10n.demoScenario,
-              border: const OutlineInputBorder(),
-            ),
-            items: DemoScenario.values.map((scenario) {
-              return DropdownMenuItem(
-                value: scenario,
-                child: Text(_scenarioLabel(scenario)),
-              );
-            }).toList(),
-            onChanged: (scenario) {
-              if (scenario != null) {
-                onScenarioChanged(scenario);
-              }
-            },
-          ),
-        ],
-      ],
-    );
-  }
-}
-
 class _StatusSummary extends StatelessWidget {
   const _StatusSummary({required this.overview});
 
@@ -181,7 +128,11 @@ class _StatusSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final status = _statusPresentation(l10n, overview.status, overview.isDeviceOnline);
+    final status = _statusPresentation(
+      l10n,
+      overview.status,
+      overview.isDeviceOnline,
+    );
     return SectionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,13 +143,23 @@ class _StatusSummary extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(overview.systemName, style: Theme.of(context).textTheme.titleLarge),
+                    Text(
+                      overview.systemName,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                     const SizedBox(height: 4),
-                    Text(overview.location, style: Theme.of(context).textTheme.bodyMedium),
+                    Text(
+                      overview.location,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
               ),
-              StatusPill(label: status.label, icon: status.icon, color: status.color),
+              StatusPill(
+                label: status.label,
+                icon: status.icon,
+                color: status.color,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -206,7 +167,9 @@ class _StatusSummary extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             overview.isDeviceOnline
-                ? l10n.remainingHours(overview.remainingHours.toStringAsFixed(1))
+                ? l10n.remainingHours(
+                    overview.remainingHours.toStringAsFixed(1),
+                  )
                 : l10n.deviceOfflineHint,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
@@ -242,10 +205,9 @@ class _BatteryBar extends StatelessWidget {
             ),
             Text(
               '$soc%',
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: color),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: color),
             ),
           ],
         ),
@@ -255,7 +217,9 @@ class _BatteryBar extends StatelessWidget {
           child: LinearProgressIndicator(
             value: (soc / 100).clamp(0.0, 1.0),
             minHeight: 10,
-            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceContainerHighest,
             valueColor: AlwaysStoppedAnimation<Color>(color),
           ),
         ),
@@ -285,7 +249,7 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricPvPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => const PowerDetailPage(metric: PowerMetric.pv),
               ),
             ),
           ),
@@ -298,7 +262,7 @@ class _MetricsGrid extends StatelessWidget {
             caption: l10n.metricLoadPowerCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const PowerDetailPage(),
+                builder: (_) => const PowerDetailPage(metric: PowerMetric.load),
               ),
             ),
           ),
@@ -307,7 +271,9 @@ class _MetricsGrid extends StatelessWidget {
             value: overview.batterySoc.toString(),
             unit: '%',
             icon: Icons.battery_charging_full_rounded,
-            color: overview.batterySoc < 30 ? AppColors.warning : AppColors.battery,
+            color: overview.batterySoc < 30
+                ? AppColors.warning
+                : AppColors.battery,
             caption: l10n.metricBatterySocCaption,
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -321,10 +287,13 @@ class _MetricsGrid extends StatelessWidget {
             unit: 'kWh',
             icon: Icons.bolt_rounded,
             color: AppColors.battery,
-            caption: l10n.todayUsedCaption(overview.todayConsumptionKwh.toStringAsFixed(1)),
+            caption: l10n.todayUsedCaption(
+              overview.todayConsumptionKwh.toStringAsFixed(1),
+            ),
             onTap: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (_) => const EnergyDetailPage(),
+                builder: (_) =>
+                    const EnergyDetailPage(metric: EnergyMetric.generation),
               ),
             ),
           ),
@@ -336,7 +305,7 @@ class _MetricsGrid extends StatelessWidget {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
           physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: isNarrow ? 2.15 : 1.08,
+          childAspectRatio: isNarrow ? 2.0 : 1.08,
           children: cards,
         );
       },
@@ -350,24 +319,38 @@ class _MetricsGrid extends StatelessWidget {
   bool online,
 ) {
   if (!online) {
-    return (label: l10n.statusOffline, icon: Icons.cloud_off_rounded, color: AppColors.danger);
+    return (
+      label: l10n.statusOffline,
+      icon: Icons.cloud_off_rounded,
+      color: AppColors.danger,
+    );
   }
   return switch (status) {
-    SystemStatus.normal => (label: l10n.statusNormal, icon: Icons.check_circle_rounded, color: AppColors.battery),
-    SystemStatus.charging => (label: l10n.statusCharging, icon: Icons.battery_charging_full_rounded, color: AppColors.battery),
-    SystemStatus.discharging => (label: l10n.statusDischarging, icon: Icons.electric_bolt_rounded, color: AppColors.ocean),
-    SystemStatus.lowBattery => (label: l10n.statusLowBattery, icon: Icons.battery_alert_rounded, color: AppColors.warning),
-    SystemStatus.fault => (label: l10n.statusActionNeeded, icon: Icons.report_rounded, color: AppColors.danger),
-  };
-}
-
-String _scenarioLabel(DemoScenario scenario) {
-  return switch (scenario) {
-    DemoScenario.normal => 'Normal operation',
-    DemoScenario.lowBattery => 'Low battery',
-    DemoScenario.offline => 'Device offline',
-    DemoScenario.overload => 'Overload alert',
-    DemoScenario.refreshFailed => 'Weak network',
+    SystemStatus.normal => (
+      label: l10n.statusNormal,
+      icon: Icons.check_circle_rounded,
+      color: AppColors.battery,
+    ),
+    SystemStatus.charging => (
+      label: l10n.statusCharging,
+      icon: Icons.battery_charging_full_rounded,
+      color: AppColors.battery,
+    ),
+    SystemStatus.discharging => (
+      label: l10n.statusDischarging,
+      icon: Icons.electric_bolt_rounded,
+      color: AppColors.ocean,
+    ),
+    SystemStatus.lowBattery => (
+      label: l10n.statusLowBattery,
+      icon: Icons.battery_alert_rounded,
+      color: AppColors.warning,
+    ),
+    SystemStatus.fault => (
+      label: l10n.statusActionNeeded,
+      icon: Icons.report_rounded,
+      color: AppColors.danger,
+    ),
   };
 }
 

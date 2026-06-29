@@ -6,7 +6,7 @@ import '../../core/i18n/app_localizations.dart';
 import '../../shared/widgets/section_card.dart';
 import '../../shared/widgets/setting_tile.dart';
 
-/// Sentinel dropdown value representing "follow the system language".
+/// 下拉框里的哨兵值，表示“跟随系统语言”。
 const String _systemLanguageValue = 'system';
 
 class ProfilePage extends StatefulWidget {
@@ -30,26 +30,30 @@ class _ProfilePageState extends State<ProfilePage> {
         return ListView(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
           children: [
-            Text(l10n.profileTitle, style: Theme.of(context).textTheme.headlineSmall),
+            Text(
+              l10n.profileTitle,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             const SizedBox(height: 6),
-            Text(l10n.profileSubtitle, style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              l10n.profileSubtitle,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: 16),
             SectionCard(
               child: Column(
                 children: [
                   SettingTile(
                     icon: Icons.account_circle_rounded,
-                    title: scope.authSession.isSignedIn ? l10n.accountSignedIn : l10n.accountNotSignedIn,
+                    title: scope.authSession.isSignedIn
+                        ? l10n.accountSignedIn
+                        : l10n.accountNotSignedIn,
                     subtitle: l10n.otpPlaceholder,
                     trailing: FilledButton.tonal(
                       onPressed: () {
-                        setState(() {
-                          scope.authSession.isSignedIn
-                              ? scope.authSession.signOut()
-                              : scope.authSession.signInWithDemoToken();
-                        });
+                        scope.authSession.signOut();
                       },
-                      child: Text(scope.authSession.isSignedIn ? l10n.signOut : l10n.signIn),
+                      child: Text(l10n.signOut),
                     ),
                   ),
                   const Divider(),
@@ -70,9 +74,19 @@ class _ProfilePageState extends State<ProfilePage> {
               SectionCard(
                 child: Column(
                   children: [
-                    _InfoRow(label: l10n.pvCapacity, value: '${device.capacityKw.toStringAsFixed(1)} kW'),
-                    _InfoRow(label: l10n.batteryCapacity, value: '${device.batteryCapacityKwh.toStringAsFixed(1)} kWh'),
-                    _InfoRow(label: l10n.firmware, value: device.firmwareVersion),
+                    _InfoRow(
+                      label: l10n.pvCapacity,
+                      value: '${device.capacityKw.toStringAsFixed(1)} kW',
+                    ),
+                    _InfoRow(
+                      label: l10n.batteryCapacity,
+                      value:
+                          '${device.batteryCapacityKwh.toStringAsFixed(1)} kWh',
+                    ),
+                    _InfoRow(
+                      label: l10n.firmware,
+                      value: device.firmwareVersion,
+                    ),
                   ],
                 ),
               ),
@@ -93,7 +107,8 @@ class _ProfilePageState extends State<ProfilePage> {
                     subtitle: l10n.alertNotificationsSubtitle,
                     trailing: Switch(
                       value: _notificationsEnabled,
-                      onChanged: (value) => setState(() => _notificationsEnabled = value),
+                      onChanged: (value) =>
+                          setState(() => _notificationsEnabled = value),
                     ),
                   ),
                   const Divider(),
@@ -122,7 +137,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showSnack(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -132,7 +149,8 @@ class _LanguageDropdown extends StatelessWidget {
     final scope = AppScope.of(context);
     final l10n = AppLocalizations.of(context);
     final controller = scope.localeController;
-    final currentValue = controller.locale?.languageCode ?? _systemLanguageValue;
+    final currentValue =
+        controller.locale?.languageCode ?? _systemLanguageValue;
 
     return DropdownButton<String>(
       value: currentValue,
@@ -175,7 +193,9 @@ class _InfoRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          Expanded(child: Text(label, style: Theme.of(context).textTheme.bodyMedium)),
+          Expanded(
+            child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
+          ),
           Flexible(
             child: Text(
               value,

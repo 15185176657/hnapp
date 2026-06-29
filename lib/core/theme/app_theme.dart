@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-/// Brand accent colors. These are intentionally brightness-independent so the
-/// same solar/battery/ocean semantics read correctly in light and dark themes.
+/// 品牌强调色。这里故意不随明暗主题变化，保证太阳能、电池、用电等语义在
+/// 浅色和深色模式下都保持一致。
 abstract final class AppColors {
   static const solar = Color(0xFFF4A629);
   static const battery = Color(0xFF1F9D63);
@@ -9,8 +9,8 @@ abstract final class AppColors {
   static const danger = Color(0xFFE04F3A);
   static const warning = Color(0xFFE18B16);
 
-  // Light neutrals (kept for the light theme definition only). Widgets should
-  // read neutral colors from `Theme.of(context)` so dark mode works correctly.
+  // 浅色主题中使用的中性色。组件应优先从 Theme.of(context) 读取中性色，
+  // 这样深色模式才能正确生效。
   static const ink = Color(0xFF17212B);
   static const muted = Color(0xFF667085);
   static const canvas = Color(0xFFF6F8F5);

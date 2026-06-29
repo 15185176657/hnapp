@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_scope.dart';
+import 'core/api/auth_api.dart';
 import 'core/api/api_client.dart';
 import 'core/config/app_environment.dart';
 import 'core/demo/demo_repository.dart';
@@ -12,6 +13,7 @@ import 'core/theme/app_theme.dart';
 import 'features/alerts/alerts_page.dart';
 import 'features/dashboard/dashboard_page.dart';
 import 'features/data/data_page.dart';
+import 'features/login/login_page.dart';
 import 'features/profile/profile_page.dart';
 
 void main() {
@@ -19,7 +21,9 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, this.initiallySignedIn = false});
+
+  final bool initiallySignedIn;
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -27,6 +31,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late final AuthSession _authSession;
+  late final AuthApi _authApi;
   late final DemoRepository _demoRepository;
   late final ApiClient _apiClient;
   late final LocaleController _localeController;
@@ -34,7 +39,11 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authSession = AuthSession()..signInWithDemoToken();
+    _authSession = AuthSession();
+    if (widget.initiallySignedIn) {
+      _authSession.signInWithToken('demo-session-token');
+    }
+    _authApi = const AuthApi();
     _demoRepository = DemoRepository();
     _apiClient = ApiClient(
       config: ApiConfig.fromDartDefine(),
@@ -53,11 +62,12 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return AppScope(
       apiClient: _apiClient,
+      authApi: _authApi,
       authSession: _authSession,
       demoRepository: _demoRepository,
       localeController: _localeController,
       child: AnimatedBuilder(
-        animation: _localeController,
+        animation: Listenable.merge([_localeController, _authSession]),
         builder: (context, _) {
           return MaterialApp(
             title: 'Off-grid Solar',
@@ -76,7 +86,9 @@ class _MyAppState extends State<MyApp> {
             localeResolutionCallback: (deviceLocale, supportedLocales) {
               return _localeController.resolve(deviceLocale);
             },
-            home: const SolarShell(),
+            home: _authSession.isSignedIn
+                ? const SolarShell()
+                : const LoginPage(),
           );
         },
       ),
@@ -106,14 +118,12 @@ class _SolarShellState extends State<SolarShell> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
-        child: IndexedStack(
-          index: _selectedIndex,
-          children: _pages,
-        ),
+        child: IndexedStack(index: _selectedIndex, children: _pages),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (index) => setState(() => _selectedIndex = index),
+        onDestinationSelected: (index) =>
+            setState(() => _selectedIndex = index),
         destinations: [
           NavigationDestination(
             icon: const Icon(Icons.dashboard_outlined),

@@ -1,21 +1,21 @@
 enum SystemStatus { normal, charging, discharging, lowBattery, fault }
 
-/// Time granularity used on detail chart pages.
+/// 详情图表页使用的时间粒度。
 enum ChartGranularity { day, week, month }
 
-/// A single (x-index, y-value, label) triple for chart series.
+/// 图表序列中的单个点，包含横向索引、数值和标签。
 class ChartPoint {
   const ChartPoint({required this.x, required this.y, required this.label});
 
-  /// Horizontal position (0-based index aligned with [label]).
+  /// 横向位置，从 0 开始，并与 [label] 对齐。
   final double x;
   final double y;
 
-  /// Short axis label, e.g. "08", "Mon", "01".
+  /// 坐标轴短标签，例如 "08"、"Mon"、"01"。
   final String label;
 }
 
-/// Energy (generation + consumption) chart payload for a given granularity.
+/// 指定时间粒度下的电量图表数据，包含发电量和用电量。
 class EnergyChartData {
   const EnergyChartData({
     required this.granularity,
@@ -36,7 +36,7 @@ class EnergyChartData {
   final double peakConsumptionKwh;
 }
 
-/// Power flow (PV + load) chart payload for a given granularity.
+/// 指定时间粒度下的功率流图表数据，包含光伏功率和负载功率。
 class PowerChartData {
   const PowerChartData({
     required this.granularity,
@@ -57,7 +57,7 @@ class PowerChartData {
   final double avgLoadKw;
 }
 
-/// Battery SOC chart payload for a given granularity.
+/// 指定时间粒度下的电池 SOC 图表数据。
 class BatteryChartData {
   const BatteryChartData({
     required this.granularity,

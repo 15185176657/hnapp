@@ -14,10 +14,10 @@ class SimpleBarChart extends StatelessWidget {
   final List<double> primaryValues;
   final List<double> secondaryValues;
 
-  /// Optional labels rendered under each bar group (for example hour markers).
+  /// 可选的柱组底部标签，例如小时刻度。
   final List<String>? labels;
 
-  /// Unit shown next to the Y-axis max reference value.
+  /// Y 轴最大参考值旁展示的单位。
   final String unit;
 
   @override
@@ -35,7 +35,7 @@ class SimpleBarChart extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Simple Y-axis scale reference so bar heights are quantifiable.
+        // 简单展示 Y 轴刻度参考，让柱状高度有可读数值依据。
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

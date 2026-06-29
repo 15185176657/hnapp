@@ -17,12 +17,30 @@ class AlertsPage extends StatefulWidget {
 
 class _AlertsPageState extends State<AlertsPage> {
   bool _showHistory = false;
+  Future<List<SolarAlert>>? _alertsFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _alertsFuture ??= _fetchAlerts(_showHistory);
+  }
+
+  Future<List<SolarAlert>> _fetchAlerts(bool history) {
+    return AppScope.of(context).demoRepository.fetchAlerts(history: history);
+  }
+
+  void _setShowHistory(bool value) {
+    setState(() {
+      _showHistory = value;
+      _alertsFuture = _fetchAlerts(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return FutureBuilder<List<SolarAlert>>(
-      future: AppScope.of(context).demoRepository.fetchAlerts(history: _showHistory),
+      future: _alertsFuture,
       builder: (context, snapshot) {
         final alerts = snapshot.data ?? const <SolarAlert>[];
         return ListView(
@@ -38,7 +56,7 @@ class _AlertsPageState extends State<AlertsPage> {
                 ButtonSegment(value: true, label: Text(l10n.segmentHistory), icon: const Icon(Icons.history_rounded)),
               ],
               selected: {_showHistory},
-              onSelectionChanged: (selection) => setState(() => _showHistory = selection.first),
+              onSelectionChanged: (selection) => _setShowHistory(selection.first),
             ),
             const SizedBox(height: 16),
             if (snapshot.connectionState != ConnectionState.done)
@@ -76,57 +94,56 @@ class _AlertCard extends StatelessWidget {
     final accent = alert.isResolved ? AppColors.battery : presentation.color;
     return SectionCard(
       padding: EdgeInsets.zero,
-      child: IntrinsicHeight(
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Severity accent bar for fast scanning.
-            Container(
-              width: 4,
-              decoration: BoxDecoration(
-                color: accent,
-                borderRadius: const BorderRadius.horizontal(left: Radius.circular(16)),
-              ),
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 4,
+            child: DecoratedBox(
+              // 颜色条由外层 SectionCard 统一裁剪圆角，避免首次布局时溢出。
+              decoration: BoxDecoration(color: accent),
             ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
-                        ),
-                        StatusPill(
-                          label: alert.isResolved ? l10n.resolved : presentation.label,
-                          icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
-                          color: accent,
-                        ),
-                      ],
+                    Expanded(
+                      child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
                     ),
-                    const SizedBox(height: 8),
-                    Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
-                    const SizedBox(height: 10),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
+                    const SizedBox(width: 8),
+                    StatusPill(
+                      label: alert.isResolved ? l10n.resolved : presentation.label,
+                      icon: alert.isResolved ? Icons.task_alt_rounded : presentation.icon,
+                      color: accent,
                     ),
-                    const SizedBox(height: 8),
-                    Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
-              ),
+                const SizedBox(height: 8),
+                Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
+                ),
+                const SizedBox(height: 8),
+                Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

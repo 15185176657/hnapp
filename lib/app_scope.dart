@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+import 'core/api/auth_api.dart';
 import 'core/api/api_client.dart';
 import 'core/demo/demo_repository.dart';
 import 'core/i18n/locale_controller.dart';
@@ -9,6 +10,7 @@ class AppScope extends InheritedWidget {
   const AppScope({
     super.key,
     required this.apiClient,
+    required this.authApi,
     required this.authSession,
     required this.demoRepository,
     required this.localeController,
@@ -16,6 +18,7 @@ class AppScope extends InheritedWidget {
   });
 
   final ApiClient apiClient;
+  final AuthApi authApi;
   final AuthSession authSession;
   final DemoRepository demoRepository;
   final LocaleController localeController;
@@ -29,6 +32,7 @@ class AppScope extends InheritedWidget {
   @override
   bool updateShouldNotify(AppScope oldWidget) {
     return apiClient != oldWidget.apiClient ||
+        authApi != oldWidget.authApi ||
         authSession != oldWidget.authSession ||
         demoRepository != oldWidget.demoRepository ||
         localeController != oldWidget.localeController;

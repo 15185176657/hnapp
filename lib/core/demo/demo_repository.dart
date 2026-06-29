@@ -86,7 +86,7 @@ class DemoRepository {
     );
   }
 
-  // ── Chart data ─────────────────────────────────────────────────────────────
+  // ── 图表数据 ───────────────────────────────────────────────────────────────
 
   Future<EnergyChartData> fetchEnergyChart(ChartGranularity granularity) async {
     await Future<void>.delayed(const Duration(milliseconds: 180));
@@ -115,7 +115,7 @@ class DemoRepository {
     };
   }
 
-  // ── Energy data builders ──────────────────────────────────────────────────
+  // ── 电量数据构造 ───────────────────────────────────────────────────────────
 
   EnergyChartData _energyDay() {
     final gen = [0.0, 0.0, 0.6, 1.4, 2.3, 3.1, 3.8, 3.2, 2.1, 1.0, 0.6, 0.3];
@@ -167,7 +167,7 @@ class DemoRepository {
     );
   }
 
-  // ── Power data builders ───────────────────────────────────────────────────
+  // ── 功率数据构造 ───────────────────────────────────────────────────────────
 
   PowerChartData _powerDay() {
     final pv   = [0.0, 0.3, 1.2, 2.8, 3.8, 4.2, 3.9, 3.2, 2.0, 0.8, 0.2, 0.0];
@@ -221,7 +221,7 @@ class DemoRepository {
     );
   }
 
-  // ── Battery data builders ─────────────────────────────────────────────────
+  // ── 电池数据构造 ───────────────────────────────────────────────────────────
 
   BatteryChartData _batteryDay() {
     final soc = [92.0,88.0,80.0,72.0,68.0,74.0,80.0,84.0,80.0,76.0,72.0,78.0];
