@@ -76,6 +76,10 @@ class BatteryChartData {
 
 enum AlertSeverity { warning, critical, info }
 
+/// Stable identifier for a demo alert so its title/message/action can be
+/// localized at display time instead of carrying hardcoded English text.
+enum AlertKind { lowBattery, overload, controllerTemperature }
+
 class StationOverview {
   const StationOverview({
     required this.systemName,
@@ -128,17 +132,13 @@ class EnergyStatistics {
 
 class SolarAlert {
   const SolarAlert({
-    required this.title,
-    required this.message,
-    required this.action,
+    required this.kind,
     required this.severity,
     required this.occurredAt,
     required this.isResolved,
   });
 
-  final String title;
-  final String message;
-  final String action;
+  final AlertKind kind;
   final AlertSeverity severity;
   final DateTime occurredAt;
   final bool isResolved;

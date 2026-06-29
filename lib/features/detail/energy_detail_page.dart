@@ -301,7 +301,7 @@ class _EnergyBarChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        genPoints[i].label,
+                        AppLocalizations.of(context).chartLabel(genPoints[i].label),
                         style: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
                       ),
                     );

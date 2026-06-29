@@ -98,7 +98,7 @@ class _AlertCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Text(alert.title, style: Theme.of(context).textTheme.titleMedium),
+                          child: Text(l10n.alertTitle(alert.kind), style: Theme.of(context).textTheme.titleMedium),
                         ),
                         StatusPill(
                           label: alert.isResolved ? l10n.resolved : presentation.label,
@@ -108,7 +108,7 @@ class _AlertCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(alert.message, style: Theme.of(context).textTheme.bodyLarge),
+                    Text(l10n.alertMessage(alert.kind), style: Theme.of(context).textTheme.bodyLarge),
                     const SizedBox(height: 10),
                     Container(
                       width: double.infinity,
@@ -117,7 +117,7 @@ class _AlertCard extends StatelessWidget {
                         color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Text(l10n.actionPrefix(alert.action), style: Theme.of(context).textTheme.bodyMedium),
+                      child: Text(l10n.actionPrefix(l10n.alertAction(alert.kind)), style: Theme.of(context).textTheme.bodyMedium),
                     ),
                     const SizedBox(height: 8),
                     Text(_relativeTime(l10n, alert.occurredAt), style: Theme.of(context).textTheme.bodyMedium),

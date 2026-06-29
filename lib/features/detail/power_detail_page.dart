@@ -280,7 +280,7 @@ class _PowerLineChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        pvPoints[i].label,
+                        AppLocalizations.of(context).chartLabel(pvPoints[i].label),
                         style:
                             theme.textTheme.bodySmall?.copyWith(fontSize: 10),
                       ),
