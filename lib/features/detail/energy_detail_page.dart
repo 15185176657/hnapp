@@ -8,7 +8,7 @@ import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/section_card.dart';
 
-/// Detail page showing generation + consumption bar chart with Day/Week/Month
+/// Detail page showing generation only as a bar chart with Day/Week/Month
 /// granularity tabs.
 class EnergyDetailPage extends StatefulWidget {
   const EnergyDetailPage({super.key});
@@ -62,7 +62,7 @@ class _EnergyDetailPageState extends State<EnergyDetailPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.detailEnergyTitle)),
+      appBar: AppBar(title: Text(l10n.legendGeneration)),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
@@ -121,30 +121,13 @@ class _SummaryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.legendGeneration,
-            value: data.totalGenerationKwh.toStringAsFixed(1),
-            unit: 'kWh',
-            color: AppColors.solar,
-            icon: Icons.wb_sunny_rounded,
-            sub: '${l10n.detailPeak} ${data.peakGenerationKwh.toStringAsFixed(1)} kWh',
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.legendConsumption,
-            value: data.totalConsumptionKwh.toStringAsFixed(1),
-            unit: 'kWh',
-            color: AppColors.ocean,
-            icon: Icons.power_rounded,
-            sub: '${l10n.detailPeak} ${data.peakConsumptionKwh.toStringAsFixed(1)} kWh',
-          ),
-        ),
-      ],
+    return _SummaryTile(
+      label: l10n.legendGeneration,
+      value: data.totalGenerationKwh.toStringAsFixed(1),
+      unit: 'kWh',
+      color: AppColors.solar,
+      icon: Icons.wb_sunny_rounded,
+      sub: '${l10n.detailPeak} ${data.peakGenerationKwh.toStringAsFixed(1)} kWh',
     );
   }
 }
@@ -217,12 +200,8 @@ class _EnergyBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final genPoints = data.generationPoints;
-    final conPoints = data.consumptionPoints;
 
-    final maxY = [
-      ...genPoints.map((p) => p.y),
-      ...conPoints.map((p) => p.y),
-    ].fold<double>(1, (m, v) => v > m ? v : m);
+    final maxY = genPoints.map((p) => p.y).fold<double>(1, (m, v) => v > m ? v : m);
 
     // Subsample labels so the axis is not too crowded.
     final labelStep = _labelStep(genPoints.length);
@@ -235,12 +214,6 @@ class _EnergyBarChart extends StatelessWidget {
           BarChartRodData(
             toY: genPoints[i].y,
             color: AppColors.solar,
-            width: _barWidth(genPoints.length),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
-          ),
-          BarChartRodData(
-            toY: conPoints[i].y,
-            color: AppColors.ocean,
             width: _barWidth(genPoints.length),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
           ),
@@ -316,11 +289,8 @@ class _EnergyBarChart extends StatelessWidget {
                   color: theme.colorScheme.outlineVariant,
                 ),
                 getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                  final label = rodIndex == 0
-                      ? AppLocalizations.of(context).legendGeneration
-                      : AppLocalizations.of(context).legendConsumption;
                   return BarTooltipItem(
-                    '$label\n${rod.toY.toStringAsFixed(1)} kWh',
+                    '${AppLocalizations.of(context).legendGeneration}\n${rod.toY.toStringAsFixed(1)} kWh',
                     theme.textTheme.bodySmall!,
                   );
                 },
@@ -387,7 +357,6 @@ class _Legend extends StatelessWidget {
       runSpacing: 8,
       children: [
         _LegendDot(color: AppColors.solar, label: l10n.legendGeneration),
-        _LegendDot(color: AppColors.ocean, label: l10n.legendConsumption),
       ],
     );
   }

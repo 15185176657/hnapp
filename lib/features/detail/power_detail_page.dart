@@ -8,10 +8,15 @@ import '../../core/i18n/app_localizations.dart';
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/section_card.dart';
 
-/// Detail page showing PV power and load power as a line chart with
-/// Day / Week / Month granularity tabs.
+/// Which single metric the power detail page should display.
+enum PowerMetric { pv, load }
+
+/// Detail page showing a single power metric (PV power OR load power) as a line
+/// chart with Day / Week / Month granularity tabs.
 class PowerDetailPage extends StatefulWidget {
-  const PowerDetailPage({super.key});
+  const PowerDetailPage({super.key, required this.metric});
+
+  final PowerMetric metric;
 
   @override
   State<PowerDetailPage> createState() => _PowerDetailPageState();
@@ -61,8 +66,13 @@ class _PowerDetailPageState extends State<PowerDetailPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final metric = widget.metric;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.detailPowerTitle)),
+      appBar: AppBar(
+        title: Text(
+          metric == PowerMetric.pv ? l10n.metricPvPower : l10n.metricLoadPower,
+        ),
+      ),
       body: RefreshIndicator(
         onRefresh: _load,
         child: ListView(
@@ -96,11 +106,11 @@ class _PowerDetailPageState extends State<PowerDetailPage> {
                 ),
               )
             else if (_data != null) ...[
-              _SummaryRow(data: _data!),
+              _SummaryRow(data: _data!, metric: metric),
               const SizedBox(height: 16),
-              _PowerLineChart(data: _data!),
+              _PowerLineChart(data: _data!, metric: metric),
               const SizedBox(height: 12),
-              _Legend(),
+              _Legend(metric: metric),
             ],
           ],
         ),
@@ -112,36 +122,21 @@ class _PowerDetailPageState extends State<PowerDetailPage> {
 // ── Summary ──────────────────────────────────────────────────────────────────
 
 class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({required this.data});
+  const _SummaryRow({required this.data, required this.metric});
   final PowerChartData data;
+  final PowerMetric metric;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Row(
-      children: [
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.metricPvPower,
-            value: data.avgPvKw.toStringAsFixed(1),
-            unit: 'kW',
-            color: AppColors.solar,
-            icon: Icons.wb_sunny_rounded,
-            sub: '${l10n.detailPeak} ${data.peakPvKw.toStringAsFixed(1)} kW',
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _SummaryTile(
-            label: l10n.metricLoadPower,
-            value: data.avgLoadKw.toStringAsFixed(1),
-            unit: 'kW',
-            color: AppColors.ocean,
-            icon: Icons.home_work_rounded,
-            sub: '${l10n.detailPeak} ${data.peakLoadKw.toStringAsFixed(1)} kW',
-          ),
-        ),
-      ],
+    final isPv = metric == PowerMetric.pv;
+    return _SummaryTile(
+      label: isPv ? l10n.metricPvPower : l10n.metricLoadPower,
+      value: (isPv ? data.avgPvKw : data.avgLoadKw).toStringAsFixed(1),
+      unit: 'kW',
+      color: isPv ? AppColors.solar : AppColors.ocean,
+      icon: isPv ? Icons.wb_sunny_rounded : Icons.home_work_rounded,
+      sub: '${l10n.detailPeak} ${(isPv ? data.peakPvKw : data.peakLoadKw).toStringAsFixed(1)} kW',
     );
   }
 }
@@ -207,21 +202,20 @@ class _SummaryTile extends StatelessWidget {
 // ── Line chart ───────────────────────────────────────────────────────────────
 
 class _PowerLineChart extends StatelessWidget {
-  const _PowerLineChart({required this.data});
+  const _PowerLineChart({required this.data, required this.metric});
   final PowerChartData data;
+  final PowerMetric metric;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final pvPoints = data.pvPowerPoints;
-    final loadPoints = data.loadPowerPoints;
+    final isPv = metric == PowerMetric.pv;
+    final points = isPv ? data.pvPowerPoints : data.loadPowerPoints;
+    final seriesColor = isPv ? AppColors.solar : AppColors.ocean;
 
-    final maxY = [
-      ...pvPoints.map((p) => p.y),
-      ...loadPoints.map((p) => p.y),
-    ].fold<double>(1, (m, v) => v > m ? v : m);
+    final maxY = points.map((p) => p.y).fold<double>(1, (m, v) => v > m ? v : m);
 
-    final labelStep = _labelStep(pvPoints.length);
+    final labelStep = _labelStep(points.length);
 
     FlSpot toSpot(ChartPoint p) => FlSpot(p.x, p.y);
 
@@ -272,7 +266,7 @@ class _PowerLineChart extends StatelessWidget {
                   reservedSize: 22,
                   getTitlesWidget: (v, meta) {
                     final i = v.toInt();
-                    if (i < 0 || i >= pvPoints.length) {
+                    if (i < 0 || i >= points.length) {
                       return const SizedBox.shrink();
                     }
                     if (v != v.roundToDouble()) return const SizedBox.shrink();
@@ -280,7 +274,7 @@ class _PowerLineChart extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        AppLocalizations.of(context).chartLabel(pvPoints[i].label),
+                        AppLocalizations.of(context).chartLabel(points[i].label),
                         style:
                             theme.textTheme.bodySmall?.copyWith(fontSize: 10),
                       ),
@@ -295,7 +289,7 @@ class _PowerLineChart extends StatelessWidget {
                 tooltipBorder:
                     BorderSide(color: theme.colorScheme.outlineVariant),
                 getTooltipItems: (spots) => spots.map((s) {
-                  final label = s.barIndex == 0
+                  final label = isPv
                       ? AppLocalizations.of(context).metricPvPower
                       : AppLocalizations.of(context).metricLoadPower;
                   return LineTooltipItem(
@@ -307,25 +301,14 @@ class _PowerLineChart extends StatelessWidget {
             ),
             lineBarsData: [
               LineChartBarData(
-                spots: pvPoints.map(toSpot).toList(),
+                spots: points.map(toSpot).toList(),
                 isCurved: true,
-                color: AppColors.solar,
+                color: seriesColor,
                 barWidth: 2.5,
                 dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
                   show: true,
-                  color: AppColors.solar.withAlpha(30),
-                ),
-              ),
-              LineChartBarData(
-                spots: loadPoints.map(toSpot).toList(),
-                isCurved: true,
-                color: AppColors.ocean,
-                barWidth: 2.5,
-                dotData: const FlDotData(show: false),
-                belowBarData: BarAreaData(
-                  show: true,
-                  color: AppColors.ocean.withAlpha(30),
+                  color: seriesColor.withAlpha(30),
                 ),
               ),
             ],
@@ -376,15 +359,21 @@ class _GranularityToggle extends StatelessWidget {
 // ── Legend ───────────────────────────────────────────────────────────────────
 
 class _Legend extends StatelessWidget {
+  const _Legend({required this.metric});
+  final PowerMetric metric;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final isPv = metric == PowerMetric.pv;
     return Wrap(
       spacing: 16,
       runSpacing: 8,
       children: [
-        _LegendDot(color: AppColors.solar, label: l10n.metricPvPower),
-        _LegendDot(color: AppColors.ocean, label: l10n.metricLoadPower),
+        _LegendDot(
+          color: isPv ? AppColors.solar : AppColors.ocean,
+          label: isPv ? l10n.metricPvPower : l10n.metricLoadPower,
+        ),
       ],
     );
   }
