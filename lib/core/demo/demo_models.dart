@@ -3,6 +3,12 @@ enum SystemStatus { normal, charging, discharging, lowBattery, fault }
 /// Time granularity used on detail chart pages.
 enum ChartGranularity { day, week, month }
 
+/// Which power metric a detail page should display.
+enum PowerMetric { pv, load }
+
+/// Which energy metric a detail page should display.
+enum EnergyMetric { generation, consumption }
+
 /// A single (x-index, y-value, label) triple for chart series.
 class ChartPoint {
   const ChartPoint({required this.x, required this.y, required this.label});
