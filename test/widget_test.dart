@@ -51,12 +51,26 @@ void main() {
     const en = AppLocalizations(Locale('en'));
     const zh = AppLocalizations(Locale('zh'));
     const th = AppLocalizations(Locale('th'));
+    const ja = AppLocalizations(Locale('ja'));
+    const ko = AppLocalizations(Locale('ko'));
 
     expect(en.navHome, 'Home');
     expect(zh.navHome, '首页');
     expect(th.navData, 'ข้อมูล');
     expect(en.remainingHours('9.5'), contains('9.5'));
     expect(zh.actionPrefix('check'), contains('check'));
+
+    // Japanese translations.
+    expect(ja.navHome, 'ホーム');
+    expect(ja.navData, 'データ');
+    expect(ja.language, '言語');
+    expect(ja.remainingHours('5'), contains('5'));
+
+    // Korean translations.
+    expect(ko.navHome, '홈');
+    expect(ko.navData, '데이터');
+    expect(ko.language, '언어');
+    expect(ko.remainingHours('3'), contains('3'));
 
     // Unknown languages fall back to the English table.
     const unknown = AppLocalizations(Locale('fr'));
